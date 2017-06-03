@@ -9,7 +9,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.unai.impapi.DBIM;
+import com.unai.impapi.PAPI;
 import com.unai.impapi.data.Movie;
 import com.unai.impapi.data.Person;
 import com.unai.impapi.rel.DirectedBy;
@@ -59,11 +59,11 @@ public class MoviePageParser implements PageParser {
 			Person p = null;
 			DirectedBy directedBy = new DirectedBy();
 			String id = getDirectorId(e);
-			p = DBIM.findPerson(id);
+			p = PAPI.findPerson(id);
 			if (p == null) {
 				p = new Person(id);
 				p.setName(e.child(0).text());
-				DBIM.addPerson(p);
+				PAPI.addPerson(p);
 			}
 			directedBy.setDirector(p);
 			directedBy.setMovie(movie);
@@ -77,11 +77,11 @@ public class MoviePageParser implements PageParser {
 			Person p = null;
 			WrittenBy writtenBy = new WrittenBy();
 			String id = getWriterId(e);
-			p = DBIM.findPerson(id);
+			p = PAPI.findPerson(id);
 			if (p == null) {
 				p = new Person(id);
 				p.setName(e.child(0).text());
-				DBIM.addPerson(p);
+				PAPI.addPerson(p);
 			}
 			writtenBy.setWriter(p);
 			writtenBy.setMovie(movie);
@@ -103,7 +103,7 @@ public class MoviePageParser implements PageParser {
 		movie.setRating(getRating(doc));
 		parseDirectors(doc, movie);
 		parseWriters(doc, movie);
-		DBIM.addMovie(movie);
+		PAPI.addMovie(movie);
 		return movie;
 	}
 	

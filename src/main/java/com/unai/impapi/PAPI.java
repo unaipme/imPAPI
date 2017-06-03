@@ -6,10 +6,12 @@ import java.util.Set;
 import com.unai.impapi.data.Movie;
 import com.unai.impapi.data.Person;
 
-public class DBIM {
+public final class PAPI {
 	
 	private static Set<Person> people = new HashSet<>();
 	private static Set<Movie> movies = new HashSet<>();
+	
+	private PAPI() {}
 	
 	public static void addPerson(Person p) {
 		people.add(p);

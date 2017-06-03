@@ -10,7 +10,9 @@ import com.unai.impapi.parser.MoviePageParser;
 import com.unai.impapi.parser.PageParser;
 import com.unai.impapi.parser.PersonPageParser;
 
-public class Utils {
+public final class Utils {
+	
+	private Utils() {}
 	
 	public static String trim(String s) {
 		return s.replace("\u00a0", "").trim();

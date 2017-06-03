@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.unai.impapi.rel.DirectedBy;
 import com.unai.impapi.rel.WrittenBy;
 
@@ -18,7 +20,8 @@ public class Movie {
 	private List<WrittenBy> writers = new ArrayList<>();
 	private Double rating;
 	
-	public Movie(String id) {
+	public Movie(String id) throws RuntimeException {
+		if (!id.startsWith("tt")) throw new RuntimeException("Movie IDs start with \"tt\"");
 		this.id = id;
 	}
 	
@@ -61,11 +64,23 @@ public class Movie {
 			this.releaseYear = Integer.parseInt(y);
 	}
 	
-	public List<Person> getDirectors() {
+	@JsonProperty("directedBy")
+	public List<DirectedBy> getDirectors() {
+		return directors;
+	}
+	
+	@JsonIgnore
+	public List<Person> getDirectorList() {
 		return directors.stream().map(d -> d.getDirector()).collect(Collectors.toList());
 	}
 	
-	public List<Person> getWriters() {
+	@JsonProperty("writtenBy")
+	public List<WrittenBy> getWriters() {
+		return writers;
+	}
+	
+	@JsonIgnore
+	public List<Person> getWriterList() {
 		return writers.stream().map(d -> d.getWriter()).collect(Collectors.toList());
 	}
 	
@@ -113,7 +128,7 @@ public class Movie {
 		if (o == null) return false;
 		if (!(o instanceof Movie)) return false;
 		Movie m = (Movie) o;
-		return m.getId() == getId();
+		return m.getId().equals(getId());
 	}
 	
 }

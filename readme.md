@@ -6,7 +6,7 @@ Project for a IMDb public API based on web scraping library JSoup, written in Ja
 
 ```
 mvn package
-java -jar target/mpapi-<whatever>.jar <person or movie id>
+java -jar target/impapi-<whatever>.jar <person or movie id>
 ```
 
 An example of a person id is nm0348181, which will produce the following output:

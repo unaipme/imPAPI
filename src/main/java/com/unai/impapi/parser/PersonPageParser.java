@@ -11,9 +11,8 @@ import java.util.stream.Collectors;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
-import com.unai.impapi.DBIM;
+import com.unai.impapi.PAPI;
 import com.unai.impapi.data.Movie;
 import com.unai.impapi.data.Person;
 import com.unai.impapi.rel.Role;
@@ -34,6 +33,10 @@ public class PersonPageParser implements PageParser<Person> {
 		String [] nums  = doc.select("time[itemprop=birthDate]").get(0).attr("datetime").split("-");
 		List<Integer> list = Arrays.asList(nums).stream().map(Integer::valueOf).collect(Collectors.toList());
 		return LocalDate.of(list.get(0), list.get(1), list.get(2));
+	}
+	
+	private String getBirthplace(Document doc) {
+		return doc.select("div#name-born-info>a").text();
 	}
 	
 	private String getKnownForMovieTitle(Element el) {
@@ -58,12 +61,13 @@ public class PersonPageParser implements PageParser<Person> {
 		iterate(doc.select("div.knownfor-title"), e -> {
 			Role role = new Role();
 			Movie movie = null;
-			movie = DBIM.findMovie(getKnownForMovieId(e));
+			String movieId = getKnownForMovieId(e);
+			movie = PAPI.findMovie(movieId);
 			if (movie == null) {
-				movie = new Movie(person.getId());
+				movie = new Movie(movieId);
 				movie.setTitle(getKnownForMovieTitle(e));
 				movie.setReleaseYear(getKnownForReleaseYear(e));
-				DBIM.addMovie(movie);
+				PAPI.addMovie(movie);
 			}
 			role.setMovie(movie);
 			role.setPerson(person);
@@ -78,8 +82,9 @@ public class PersonPageParser implements PageParser<Person> {
 		Document doc = loadPage(id);
 		person.setName(getName(doc));
 		person.setBirthday(getBirthday(doc));
+		person.setBirthplace(getBirthplace(doc));
 		parseKnownFor(doc, person);
-		DBIM.addPerson(person);
+		PAPI.addPerson(person);
 		return person;
 	}
 
