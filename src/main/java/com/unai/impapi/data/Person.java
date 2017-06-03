@@ -71,6 +71,12 @@ public class Person {
 	}
 	
 	@Override
+	public int hashCode() {
+		int result = 4;
+		return 37 * result + getId().hashCode();
+	}
+	
+	@Override
 	public String toString() {
 		final StringBuilder s = new StringBuilder();
 		s.append(String.format("%s\n", name));

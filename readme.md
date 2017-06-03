@@ -4,6 +4,8 @@ Project for a IMDb public API based on web scraping library JSoup, written in Ja
 
 ### Running
 
+To use imPAPI as a command line app, clone this repository and run the following commands:
+
 ```
 mvn package
 java -jar target/impapi-<whatever>.jar <person or movie id>
@@ -31,6 +33,15 @@ Written by:
         James Gunn
         Dan Abnett (based on the Marvel comics by)
 ```
+
+To run imPAPI as a REST API, type the following commands after cloning the repository:
+
+```
+mvn package
+java -cp target\impapi-<whatever>.jar com.unai.impapi.RestMain
+```
+
+The REST endpoints will be available at http:\\localhost:8080. Documentation of the endpoints shall be available soon as well.
 
 ### Disclaimer
 

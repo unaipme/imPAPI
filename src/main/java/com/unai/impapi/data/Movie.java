@@ -71,7 +71,7 @@ public class Movie {
 	
 	@JsonIgnore
 	public List<Person> getDirectorList() {
-		return directors.stream().map(d -> d.getDirector()).collect(Collectors.toList());
+		return directors.stream().map(DirectedBy::getDirector).collect(Collectors.toList());
 	}
 	
 	@JsonProperty("writtenBy")
@@ -81,7 +81,7 @@ public class Movie {
 	
 	@JsonIgnore
 	public List<Person> getWriterList() {
-		return writers.stream().map(d -> d.getWriter()).collect(Collectors.toList());
+		return writers.stream().map(WrittenBy::getWriter).collect(Collectors.toList());
 	}
 	
 	public Movie withDirector(DirectedBy p) {
@@ -105,20 +105,20 @@ public class Movie {
 	@Override
 	public String toString() {
 		final StringBuilder s = new StringBuilder();
-		s.append(String.format("%s (%d) *%.1f\n", title, releaseYear, rating));
+		s.append(String.format("%s (%d) *%.1f%n", title, releaseYear, rating));
 		s.append("Directed by:\n");
 		directors.forEach(d -> {
-			if (d.getAs() != null) s.append(String.format("\t%s (as %s)\n", d.getDirector().getName(), d.getAs()));
+			if (d.getAs() != null) s.append(String.format("\t%s (as %s)%n", d.getDirector().getName(), d.getAs()));
 			else s.append(String.format("\t%s\n", d.getDirector().getName()));
 		});
 		s.append("Written by:\n");
 		writers.forEach(w -> {
 			if (w.getAs() != null) {
-				if (w.getDetail() != null) s.append(String.format("\t%s (%s) (as %s)\n", w.getWriter().getName(), w.getDetail(), w.getAs()));
-				else s.append(String.format("\t%s (as %s)\n", w.getWriter().getName(), w.getAs()));
+				if (w.getDetail() != null) s.append(String.format("\t%s (%s) (as %s)%n", w.getWriter().getName(), w.getDetail(), w.getAs()));
+				else s.append(String.format("\t%s (as %s)%n", w.getWriter().getName(), w.getAs()));
 			} else if (w.getDetail() != null)
-				s.append(String.format("\t%s (%s)\n", w.getWriter().getName(), w.getDetail()));
-			else s.append(String.format("\t%s\n", w.getWriter().getName()));
+				s.append(String.format("\t%s (%s)%n", w.getWriter().getName(), w.getDetail()));
+			else s.append(String.format("\t%s%n", w.getWriter().getName()));
 		});
 		return s.toString();
 	}
