@@ -15,9 +15,9 @@ import com.unai.impapi.data.Person;
 import com.unai.impapi.rel.DirectedBy;
 import com.unai.impapi.rel.WrittenBy;
 
-public class MoviePageParser implements PageParser {
+public class MoviePageParser implements PageParser<Movie> {
 	
-	private static final String urlTemplate = "http://www.imdb.com/title/%s";
+	private static final String URL_TEMPLATE = "http://www.imdb.com/title/%s";
 	
 	private String getTitle(Document doc) {
 		Element el = doc.select("h1[itemprop=name]").get(0);
@@ -36,8 +36,7 @@ public class MoviePageParser implements PageParser {
 	}
 	
 	private Elements getDirectors(Document doc) {
-		Elements el = doc.select("span[itemprop=director]");
-		return el;
+		return doc.select("span[itemprop=director]");
 	}
 	
 	private Elements getWriters(Document doc) {
@@ -96,7 +95,7 @@ public class MoviePageParser implements PageParser {
 	}
 	
 	public Movie parse(String mId) throws IOException {
-		Document doc = connect(String.format(urlTemplate, mId)).header("Accept-Language", "en-US").get();
+		Document doc = connect(String.format(URL_TEMPLATE, mId)).header("Accept-Language", "en-US").get();
 		Movie movie = new Movie(mId);
 		movie.setTitle(getTitle(doc));
 		movie.setReleaseYear(getReleaseDate(doc));

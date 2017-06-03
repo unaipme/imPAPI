@@ -8,10 +8,11 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.unai.impapi.exception.WrongIdTypeException;
 import com.unai.impapi.rel.DirectedBy;
 import com.unai.impapi.rel.WrittenBy;
 
-public class Movie {
+public class Movie implements PageData {
 	
 	private String id;
 	private String title;
@@ -20,8 +21,8 @@ public class Movie {
 	private List<WrittenBy> writers = new ArrayList<>();
 	private Double rating;
 	
-	public Movie(String id) throws RuntimeException {
-		if (!id.startsWith("tt")) throw new RuntimeException("Movie IDs start with \"tt\"");
+	public Movie(String id) {
+		if (!id.startsWith("tt")) throw new WrongIdTypeException("Movie IDs start with \"tt\"");
 		this.id = id;
 	}
 	
@@ -129,6 +130,12 @@ public class Movie {
 		if (!(o instanceof Movie)) return false;
 		Movie m = (Movie) o;
 		return m.getId().equals(getId());
+	}
+	
+	@Override
+	public int hashCode() {
+		int result = 7;
+		return 37 * result + getId().hashCode();
 	}
 	
 }

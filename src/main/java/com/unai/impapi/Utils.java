@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import com.unai.impapi.data.PageData;
 import com.unai.impapi.parser.MoviePageParser;
 import com.unai.impapi.parser.PageParser;
 import com.unai.impapi.parser.PersonPageParser;
@@ -25,7 +26,7 @@ public final class Utils {
 		}
 	}
 	
-	public static PageParser<?> autoparser(String id) {
+	public static PageParser<? extends PageData> autoparser(String id) {
 		if (id.startsWith("tt")) {
 			return new MoviePageParser();
 		} else if (id.startsWith("nm")) {

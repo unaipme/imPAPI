@@ -30,12 +30,12 @@ public class MovieController {
 		HttpStatus status = HttpStatus.OK;
 		if (movie == null) status = HttpStatus.NOT_FOUND;
 		else {
-			movie.getWriters().forEach(w -> {
-				w.add(linkTo(methodOn(PersonController.class).getPersonWithId(w.getWriterId())).withSelfRel());
-			});
-			movie.getDirectors().forEach(d -> {
-				d.add(linkTo(methodOn(PersonController.class).getPersonWithId(d.getDirectorId())).withSelfRel());
-			});
+			movie.getWriters().forEach(w -> 
+				w.add(linkTo(methodOn(PersonController.class).getPersonWithId(w.getWriterId())).withSelfRel())
+			);
+			movie.getDirectors().forEach(d -> 
+				d.add(linkTo(methodOn(PersonController.class).getPersonWithId(d.getDirectorId())).withSelfRel())
+			);
 		}
 			
 		return new ResponseEntity<>(movie, status);

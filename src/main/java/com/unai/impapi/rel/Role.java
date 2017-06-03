@@ -11,7 +11,7 @@ public class Role extends ResourceSupport {
 	
 	private Movie movie;
 	private Person person;
-	private String role;
+	private String roleName;
 	
 	@JsonIgnore
 	public Movie getMovie() {
@@ -36,12 +36,12 @@ public class Role extends ResourceSupport {
 		this.person = person;
 	}
 	
-	public String getRole() {
-		return role;
+	public String getRoleName() {
+		return roleName;
 	}
 	
-	public void setRole(String role) {
-		this.role = role;
+	public void setRoleName(String role) {
+		this.roleName = role;
 	}
 	
 	@Override
@@ -49,7 +49,16 @@ public class Role extends ResourceSupport {
 		if (o == null) return false;
 		if (!(o instanceof Role)) return false;
 		Role r = (Role) o;
-		return r.getMovie().equals(movie) && r.getPerson().equals(person) && r.getRole().equals(role);
+		return r.getMovie().equals(movie) && r.getPerson().equals(person) && r.getRoleName().equals(roleName);
+	}
+	
+	@Override
+	public int hashCode() {
+		int result = 6;
+		result = 37 * result + getMovie().hashCode();
+		result = 37 * result + getPerson().hashCode();
+		result = 37 * result + getRoleName().hashCode();
+		return result;
 	}
 	
 }

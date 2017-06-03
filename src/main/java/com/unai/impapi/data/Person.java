@@ -9,9 +9,10 @@ import java.util.Locale;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.unai.impapi.exception.WrongIdTypeException;
 import com.unai.impapi.rel.Role;
 
-public class Person {
+public class Person implements PageData {
 	
 	private String name;
 	private String id;
@@ -19,8 +20,8 @@ public class Person {
 	private LocalDate birthday;
 	private List<Role> knownFor = new ArrayList<>();
 
-	public Person(String id) throws RuntimeException{
-		if (!id.startsWith("nm")) throw new RuntimeException("Person IDs start with \"nm\"");
+	public Person(String id) {
+		if (!id.startsWith("nm")) throw new WrongIdTypeException("Person IDs start with \"nm\"");
 		this.id = id;
 	}
 	
@@ -79,12 +80,12 @@ public class Person {
 	@Override
 	public String toString() {
 		final StringBuilder s = new StringBuilder();
-		s.append(String.format("%s\n", name));
-		s.append(String.format("Born %s %d, %d, in %s\n", Month.of(birthday.getMonthValue()).getDisplayName(TextStyle.FULL, Locale.ENGLISH), birthday.getDayOfMonth(), birthday.getYear(), birthplace));
+		s.append(String.format("%s%n", name));
+		s.append(String.format("Born %s %d, %d, in %s%n", Month.of(birthday.getMonthValue()).getDisplayName(TextStyle.FULL, Locale.ENGLISH), birthday.getDayOfMonth(), birthday.getYear(), birthplace));
 		s.append("Known for:\n");
-		knownFor.forEach(r -> {
-			s.append(String.format("\t%s of %s (%d)\n", r.getRole(), r.getMovie().getTitle(), r.getMovie().getReleaseYear()));
-		});
+		knownFor.forEach(r -> 
+			s.append(String.format("\t%s of %s (%d)%n", r.getRoleName(), r.getMovie().getTitle(), r.getMovie().getReleaseYear()))
+		);
 		return s.toString();
 	}
 	

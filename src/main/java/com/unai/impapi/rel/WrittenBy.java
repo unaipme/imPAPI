@@ -13,8 +13,6 @@ import com.unai.impapi.data.Person;
 
 public class WrittenBy extends ResourceSupport {
 	
-	//private static final int TXT_THRESHOLD = 5;
-	
 	private Person writer;
 	private Movie movie;
 	private String as;

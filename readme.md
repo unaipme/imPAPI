@@ -41,7 +41,7 @@ mvn package
 java -cp target\impapi-<whatever>.jar com.unai.impapi.RestMain
 ```
 
-The REST endpoints will be available at http:\\localhost:8080. Documentation of the endpoints shall be available soon as well.
+The REST endpoints will be available at http:\\\\localhost:8080. Documentation of the endpoints shall be available soon as well.
 
 ### Disclaimer
 

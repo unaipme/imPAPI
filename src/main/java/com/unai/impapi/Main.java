@@ -4,6 +4,7 @@ import static com.unai.impapi.Utils.autoparser;
 
 import java.io.IOException;
 
+import com.unai.impapi.data.PageData;
 import com.unai.impapi.parser.PageParser;
 
 public class Main {
@@ -14,7 +15,7 @@ public class Main {
 			return;
 		}
 		String id = args[0];
-		PageParser<?> parser = autoparser(id);
+		PageParser<? extends PageData> parser = autoparser(id);
 		if (parser == null) {
 			System.out.println("No parser could be found for the given ID");
 		} else {

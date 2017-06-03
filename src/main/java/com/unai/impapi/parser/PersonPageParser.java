@@ -19,10 +19,10 @@ import com.unai.impapi.rel.Role;
 
 public class PersonPageParser implements PageParser<Person> {
 	
-	private final static String templateUrl = "http://www.imdb.com/name/%s";
+	private static final String TEMPLATE_URL = "http://www.imdb.com/name/%s";
 	
 	private Document loadPage(String id) throws IOException {
-		return connect(String.format(templateUrl, id)).header("Accept-Language", "en-US").get();
+		return connect(String.format(TEMPLATE_URL, id)).header("Accept-Language", "en-US").get();
 	}
 	
 	private String getName(Document doc) {
@@ -71,7 +71,7 @@ public class PersonPageParser implements PageParser<Person> {
 			}
 			role.setMovie(movie);
 			role.setPerson(person);
-			role.setRole(getKnownForRole(e));
+			role.setRoleName(getKnownForRole(e));
 			person.addKnownForRole(role);
 		});
 	}
