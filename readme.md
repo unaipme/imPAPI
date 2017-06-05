@@ -37,11 +37,10 @@ Written by:
 To run imPAPI as a REST API, type the following commands after cloning the repository:
 
 ```
-mvn package
-java -cp target\impapi-<whatever>.jar com.unai.impapi.RestMain
+mvn spring-boot:run
 ```
 
-The REST endpoints will be available at http:\\\\localhost:8080. Documentation of the endpoints shall be available soon as well.
+The REST endpoints will be available at http:\\\\localhost:8080. The documentation of all the endpoints is available at http:\\\\localhost:8080\\docs.
 
 ### Disclaimer
 
