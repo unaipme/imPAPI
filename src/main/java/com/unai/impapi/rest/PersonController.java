@@ -15,7 +15,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/person")
+@RequestMapping("/people")
 public class PersonController {
 	
 	@Autowired

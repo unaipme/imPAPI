@@ -13,7 +13,8 @@ import com.unai.impapi.repo.MovieRepository;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
-@RestController @RequestMapping("/movies")
+@RestController
+@RequestMapping("/movies")
 public class MovieController {
 	
 	@Autowired

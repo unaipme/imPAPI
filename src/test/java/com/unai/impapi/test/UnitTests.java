@@ -14,6 +14,7 @@ import com.unai.impapi.data.Person;
 import com.unai.impapi.exception.WrongIdTypeException;
 import com.unai.impapi.parser.MoviePageParser;
 import com.unai.impapi.parser.PersonPageParser;
+import com.unai.impapi.rel.DirectedBy;
 import com.unai.impapi.rel.Role;
 import com.unai.impapi.rel.WrittenBy;
 
@@ -49,12 +50,17 @@ public class UnitTests {
 		assertEquals("Title is not parsed correctly", "A Series of Unfortunate Events", movie.getTitle());
 		assertTrue("Rating is not parsed correctly", movie.getRating() < 7.5 && movie.getRating() > 6.5);
 		assertEquals("Release year is not parsed correctly", 2004, movie.getReleaseYear().intValue());
+		assertEquals("The amount of directors must be 1, is not", movie.getDirectors().size(), 1);
+		DirectedBy director = movie.getDirectors().get(0);
+		assertEquals("Director's name is not parsed correctly", "Brad Silberling", director.getDirectorName());
+		assertNull("Director's pseudonym should be null, is not", director.getAs());
+		assertEquals("The amount of writers must be 2, is not", movie.getWriters().size(), 2);
 		WrittenBy firstWriter = movie.getWriters().get(0);
 		WrittenBy secondWriter = movie.getWriters().get(1);
 		assertEquals("First writer's name is not parsed correctly", "Robert Gordon", firstWriter.getWriterName());
 		assertEquals("First writer's ID is not parsed correctly", "nm0330565", firstWriter.getWriterId());
 		assertEquals("First writer's detail is not parsed correctly", "screenplay", firstWriter.getDetail());
-		assertNull("First writer's pseudonym should be null, but is not", firstWriter.getAs());
+		assertNull("First writer's pseudonym should be null, is not", firstWriter.getAs());
 		assertEquals("Second writer's name is not parsed correctly", "Daniel Handler", secondWriter.getWriterName());
 		assertEquals("Second writer's ID is not parsed correctly", "nm1274516", secondWriter.getWriterId());
 		assertEquals("Second writer's detail is not parsed correctly", "books", secondWriter.getDetail());
