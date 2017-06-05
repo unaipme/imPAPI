@@ -95,8 +95,8 @@ public class MoviePageParser implements PageParser<Movie> {
 	}
 	
 	public Movie parse(String mId) throws IOException {
-		Document doc = connect(String.format(URL_TEMPLATE, mId)).header("Accept-Language", "en-US").get();
 		Movie movie = new Movie(mId);
+		Document doc = connect(String.format(URL_TEMPLATE, mId)).header("Accept-Language", "en-US").get();
 		movie.setTitle(getTitle(doc));
 		movie.setReleaseYear(getReleaseDate(doc));
 		movie.setRating(getRating(doc));

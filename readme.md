@@ -1,4 +1,4 @@
-# imPAPI
+# imPAPI [![Build Status](https://travis-ci.org/unaipme/imPAPI.svg?branch=master)](https://travis-ci.org/unaipme/imPAPI) [![codecov](https://codecov.io/gh/unaipme/imPAPI/branch/master/graph/badge.svg)](https://codecov.io/gh/unaipme/imPAPI)
 
 Project for a IMDb public API based on web scraping library JSoup, written in Java. The name stands for 'internet movie public API'.
 

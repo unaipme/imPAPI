@@ -54,7 +54,7 @@ public class PersonPageParser implements PageParser<Person> {
 	
 	private String getKnownForMovieId(Element el) {
 		String text = el.select("> a").get(0).attr("href");
-		return text.substring("/title/".length(), text.length() - "/?ref_=nmknf_i1".length());
+		return text.substring("/title/".length(), text.length() - "/?ref_=nm_knf_i1".length());
 	}
 	
 	private void parseKnownFor(Document doc, Person person) {
