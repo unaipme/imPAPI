@@ -2,6 +2,7 @@ package com.unai.impapi;
 
 import java.util.ListIterator;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -12,6 +13,9 @@ import com.unai.impapi.parser.PageParser;
 import com.unai.impapi.parser.PersonPageParser;
 
 public final class Utils {
+	
+	public static Pattern yearPattern = Pattern.compile("[(]([0-9])+[)]");
+	public static Pattern romnumPattern = Pattern.compile("[(]([IVXLCDM])+[)]");
 	
 	private Utils() {}
 	
@@ -33,6 +37,11 @@ public final class Utils {
 			return new PersonPageParser();
 		}
 		return null;
+	}
+	
+	public static <T> T ifNullThen(T nullable, T callback) {
+		if (nullable == null) return callback;
+		else return nullable;
 	}
 	
 }

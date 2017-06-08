@@ -19,6 +19,7 @@ public class Person implements PageData {
 	private String birthplace;
 	private LocalDate birthday;
 	private List<Role> knownFor = new ArrayList<>();
+	private String number;
 
 	public Person(String id) {
 		if (!id.startsWith("nm")) throw new WrongIdTypeException("Person IDs start with \"nm\"");
@@ -62,6 +63,18 @@ public class Person implements PageData {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public List<Role> getKnownFor() {
+		return knownFor;
+	}
+
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -98,8 +111,8 @@ public class Person implements PageData {
 		return this;
 	}
 	
-	public List<Role> getKnownFor() {
-		return knownFor;
+	public boolean hasNumber() {
+		return number != null;
 	}
 	
 }

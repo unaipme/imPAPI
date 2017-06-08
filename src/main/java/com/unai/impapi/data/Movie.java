@@ -20,6 +20,7 @@ public class Movie implements PageData {
 	private List<DirectedBy> directors = new ArrayList<>();
 	private List<WrittenBy> writers = new ArrayList<>();
 	private Double rating;
+	private String number;
 	
 	public Movie(String id) {
 		if (!id.startsWith("tt")) throw new WrongIdTypeException("Movie IDs start with \"tt\"");
@@ -85,6 +86,14 @@ public class Movie implements PageData {
 		return writers.stream().map(WrittenBy::getWriter).collect(Collectors.toList());
 	}
 	
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
+
 	public Movie withDirector(DirectedBy p) {
 		directors.add(p);
 		return this;
@@ -101,6 +110,10 @@ public class Movie implements PageData {
 	
 	public void addWriter(WrittenBy p) {
 		writers.add(p);
+	}
+	
+	public boolean hasNumber() {
+		return number != null;
 	}
 	
 	@Override

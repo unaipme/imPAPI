@@ -2,13 +2,16 @@
 
 Project for a IMDb public API based on web scraping library JSoup, written in Java. The name stands for 'internet movie public API'.
 
-### Running
+## Running from command line / terminal
 
-To use imPAPI as a command line app, clone this repository and run the following commands:
+As of now, there's two ways to use the application from the terminal. One is in "specific mode", which gets the information of the provided ID, and the "search mode".
+
+### Specific mode
+
+To use imPAPI in specific mode, clone this repository and run `mvn package` to generate a .jar file. To get the information of a person or movie with known ID, type the following:
 
 ```
-mvn package
-java -jar target/impapi-<whatever>.jar <person or movie id>
+java -jar target/impapi-<whatever>.jar --id <ID>
 ```
 
 An example of a person id is nm0348181, which will produce the following output:
@@ -34,14 +37,36 @@ Written by:
         Dan Abnett (based on the Marvel comics by)
 ```
 
-To run imPAPI as a REST API, type the following commands after cloning the repository:
+### Search mode
+
+It's possible to tell the application to search for specific information, following the given parameters. Once the .jar is generated, to see all options, type:
+
+```
+java -jar target/impapi-<whatever>.jar --help
+```
+
+As a quick example, let's say we want to search query 'robert' for any type of information. Search mode must be specified (`-s`, `--search`). As searching for any type is the default operation, we won't specify any type (with `-t`, `--type`). Lastly, we'll specify the query (with `-q`, `--query`). This will result in the following command:
+
+```
+java -jar target/impapi-<whatever>.jar -s -q robert
+```
+
+If we want to find only people with the exact name (with `-e`, `--exact`) of Robert de Niro, the command must be written as follows:
+
+```
+java -jar target/impapi-<whatever>.jar -s -q "Robert de Niro" -e
+```
+
+## Running as REST API
+
+To run imPAPI as a REST API, type the following command after cloning the repository:
 
 ```
 mvn spring-boot:run
 ```
 
-The REST endpoints will be available at http:\\\\localhost:8080. The documentation of all the endpoints is available at http:\\\\localhost:8080\\docs.
+The REST endpoints will be available at [http://localhost:8080](http://localhost:8080). The documentation of all the endpoints is available at [http://localhost:8080/docs](http://localhost:8080/docs). Search mode is still not supported by the REST interface.
 
-### Disclaimer
+## Disclaimer
 
 Actually not a great fan of Guardians of the Galaxy. It's just the first thing I found on IMDb's homepage when writing this readme.
