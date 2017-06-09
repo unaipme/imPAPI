@@ -3,13 +3,13 @@ package com.unai.impapi;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.unai.impapi.data.Movie;
 import com.unai.impapi.data.Person;
+import com.unai.impapi.data.Title;
 
 public final class PAPI {
 	
 	private static Set<Person> people = new HashSet<>();
-	private static Set<Movie> movies = new HashSet<>();
+	private static Set<Title> titles = new HashSet<>();
 	
 	private PAPI() {}
 	
@@ -17,8 +17,8 @@ public final class PAPI {
 		people.add(p);
 	}
 	
-	public static void addMovie(Movie m) {
-		movies.add(m);
+	public static void addTitle(Title title) {
+		titles.add(title);
 	}
 	
 	public static Person findPerson(String id) {
@@ -28,9 +28,9 @@ public final class PAPI {
 		return null;
 	}
 	
-	public static Movie findMovie(String id) {
-		for (Movie m : movies) {
-			if (m.getId() == id) return m;
+	public static Title findTitle(String id) {
+		for (Title t : titles) {
+			if (t.getId() == id) return t;
 		}
 		return null;
 	}

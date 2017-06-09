@@ -98,10 +98,10 @@ public class SearchPageParser {
 			String idhref = e.select(">a").get(0).attr("href");
 			String movieId = idhref.substring("/title/".length(), idhref.length() - ("/?ref_=fn_tt_tt_" + amount++).length());
 			Movie movie = null;
-			movie = PAPI.findMovie(movieId);
+			movie = (Movie) PAPI.findTitle(movieId);
 			if (movie == null) {
 				movie = new Movie(movieId);
-				PAPI.addMovie(movie);
+				PAPI.addTitle(movie);
 			}
 			result.setMovie(movie);
 			movie.setTitle(e.select(">a").get(0).text());

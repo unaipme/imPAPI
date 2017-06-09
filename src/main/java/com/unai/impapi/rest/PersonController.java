@@ -33,7 +33,7 @@ public class PersonController {
 		if (person == null) status = HttpStatus.NOT_FOUND;
 		else {
 			person.getKnownFor().forEach(k -> 
-				k.add(linkTo(methodOn(MovieController.class).getMovieWithId(k.getMovie().getId())).withSelfRel())
+				k.add(linkTo(methodOn(MovieController.class).getMovieWithId(k.getTitle().getId())).withSelfRel())
 			);
 		}
 		return new ResponseEntity<>(person, status);

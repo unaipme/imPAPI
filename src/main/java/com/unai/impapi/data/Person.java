@@ -9,8 +9,8 @@ import java.util.Locale;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.unai.impapi.data.rel.Role;
 import com.unai.impapi.exception.WrongIdTypeException;
-import com.unai.impapi.rel.Role;
 
 public class Person implements PageData {
 	
@@ -96,9 +96,15 @@ public class Person implements PageData {
 		s.append(String.format("%s%n", name));
 		s.append(String.format("Born %s %d, %d, in %s%n", Month.of(birthday.getMonthValue()).getDisplayName(TextStyle.FULL, Locale.ENGLISH), birthday.getDayOfMonth(), birthday.getYear(), birthplace));
 		s.append("Known for:\n");
-		knownFor.forEach(r -> 
-			s.append(String.format("\t%s of %s (%d)%n", r.getRoleName(), r.getMovie().getTitle(), r.getMovie().getReleaseYear()))
-		);
+		knownFor.forEach(r -> {
+			if (r.getTitle() instanceof Movie) {
+				Movie m = (Movie) r.getTitle();
+				s.append(String.format("\t%s of %s (%d)%n", r.getRoleName(), m.getTitle(), m.getReleaseYear()));
+			} else if (r.getTitle() instanceof Series) {
+				Series m = (Series) r.getTitle();
+				s.append(String.format("\t%s of %s (%d-%d)%n", r.getRoleName(), m.getTitle(), m.getStartYear(), m.getEndYear()));
+			}
+		});
 		return s.toString();
 	}
 	

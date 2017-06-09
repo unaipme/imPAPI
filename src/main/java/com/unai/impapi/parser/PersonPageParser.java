@@ -7,19 +7,26 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import com.unai.impapi.PAPI;
+import com.unai.impapi.Utils;
 import com.unai.impapi.data.Movie;
 import com.unai.impapi.data.Person;
-import com.unai.impapi.rel.Role;
+import com.unai.impapi.data.Series;
+import com.unai.impapi.data.Title;
+import com.unai.impapi.data.rel.Role;
 
 public class PersonPageParser implements PageParser<Person> {
 	
 	private static final String TEMPLATE_URL = "http://www.imdb.com/name/%s";
+	
+	private static final Pattern intervalPattern = Utils.intervalPattern;
 	
 	private Document loadPage(String id) throws IOException {
 		return connect(String.format(TEMPLATE_URL, id)).header("Accept-Language", "en-US").get();
@@ -43,9 +50,16 @@ public class PersonPageParser implements PageParser<Person> {
 		return el.select("div.knownfor-title-role a.knownfor-ellipsis").get(0).text();
 	}
 	
-	private Integer getKnownForReleaseYear(Element el) {
-		String text = el.select("div.knownfor-year span.knownfor-ellipsis").get(0).text();
-		return Integer.valueOf(text.substring(1, text.length() - 1));
+	private Integer getKnownForMovieReleaseYear(Element el) {
+		return Integer.valueOf(el.select("div.knownfor-year span.knownfor-ellipsis").get(0).text().substring(1, 5));
+	}
+	
+	private Integer getKnownForSeriesStartYear(Element el) {
+		return Integer.valueOf(el.select("div.knownfor-year span.knownfor-ellipsis").get(0).text().substring(1, 5));
+	}
+	
+	private Integer getKnownForSeriesEndYear(Element el) {
+		return Integer.valueOf(el.select("div.knownfor-year span.knownfor-ellipsis").get(0).text().substring(6, 10));
 	}
 	
 	private String getKnownForRole(Element el) {
@@ -57,19 +71,33 @@ public class PersonPageParser implements PageParser<Person> {
 		return text.substring("/title/".length(), text.length() - "/?ref_=nm_knf_i1".length());
 	}
 	
+	private boolean isKnownForMovie(Element el) {
+		String text = el.select("div.knownfor-year span.knownfor-ellipsis").get(0).text();
+		Matcher m = intervalPattern.matcher(text);
+		if (m.find()) return false;
+		return true;
+	}
+	
 	private void parseKnownFor(Document doc, Person person) {
 		iterate(doc.select("div.knownfor-title"), e -> {
 			Role role = new Role();
-			Movie movie = null;
-			String movieId = getKnownForMovieId(e);
-			movie = PAPI.findMovie(movieId);
-			if (movie == null) {
-				movie = new Movie(movieId);
-				movie.setTitle(getKnownForMovieTitle(e));
-				movie.setReleaseYear(getKnownForReleaseYear(e));
-				PAPI.addMovie(movie);
+			boolean isMovie = isKnownForMovie(e);
+			Title title = null;
+			String titleId = getKnownForMovieId(e);
+			title = PAPI.findTitle(titleId);
+			if (title == null) {
+				if (isMovie) title = new Movie(titleId);
+				else title = new Series(titleId);
+				PAPI.addTitle(title);
 			}
-			role.setMovie(movie);
+			if (isMovie) {
+				((Movie) title).setReleaseYear(getKnownForMovieReleaseYear(e));
+			} else {
+				((Series) title).setStartYear(getKnownForSeriesStartYear(e));
+				((Series) title).setEndYear(getKnownForSeriesEndYear(e));
+			}
+			title.setTitle(getKnownForMovieTitle(e));
+			role.setTitle(title);
 			role.setPerson(person);
 			role.setRoleName(getKnownForRole(e));
 			person.addKnownForRole(role);

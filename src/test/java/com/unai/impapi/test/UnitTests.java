@@ -11,12 +11,12 @@ import org.junit.Test;
 
 import com.unai.impapi.data.Movie;
 import com.unai.impapi.data.Person;
+import com.unai.impapi.data.rel.DirectedBy;
+import com.unai.impapi.data.rel.Role;
+import com.unai.impapi.data.rel.WrittenBy;
 import com.unai.impapi.exception.WrongIdTypeException;
 import com.unai.impapi.parser.MoviePageParser;
 import com.unai.impapi.parser.PersonPageParser;
-import com.unai.impapi.rel.DirectedBy;
-import com.unai.impapi.rel.Role;
-import com.unai.impapi.rel.WrittenBy;
 
 public class UnitTests {
 
@@ -39,8 +39,8 @@ public class UnitTests {
 		assertEquals("Birthday is not parsed correctly", "1962-7-3", person.getBirthdayString());
 		assertEquals("Birthplace is not parsed correctly", "Syracuse, New York, USA", person.getBirthplace());
 		Role role = person.getKnownFor().get(0);
-		assertEquals("First 'known for' movie title is not parsed correctly", "Top Gun", role.getMovieTitle());
-		assertEquals("First 'known for' movie ID is not parsed correctly", "tt0092099", role.getMovie().getId());
+		assertEquals("First 'known for' movie title is not parsed correctly", "Top Gun", role.getTitle().getTitle());
+		assertEquals("First 'known for' movie ID is not parsed correctly", "tt0092099", role.getTitle().getId());
 		assertEquals("First 'known for' role is not correctly parsed", "Maverick", role.getRoleName());
 	}
 	

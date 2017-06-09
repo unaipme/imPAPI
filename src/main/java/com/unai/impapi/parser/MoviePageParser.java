@@ -12,8 +12,8 @@ import org.jsoup.select.Elements;
 import com.unai.impapi.PAPI;
 import com.unai.impapi.data.Movie;
 import com.unai.impapi.data.Person;
-import com.unai.impapi.rel.DirectedBy;
-import com.unai.impapi.rel.WrittenBy;
+import com.unai.impapi.data.rel.DirectedBy;
+import com.unai.impapi.data.rel.WrittenBy;
 
 public class MoviePageParser implements PageParser<Movie> {
 	
@@ -95,14 +95,18 @@ public class MoviePageParser implements PageParser<Movie> {
 	}
 	
 	public Movie parse(String mId) throws IOException {
-		Movie movie = new Movie(mId);
+		Movie movie = null;
+		movie = (Movie) PAPI.findTitle(mId);
+		if (movie == null) {
+			movie = new Movie(mId);
+			PAPI.addTitle(movie);
+		}
 		Document doc = connect(String.format(URL_TEMPLATE, mId)).header("Accept-Language", "en-US").get();
-		movie.setTitle(getTitle(doc));
-		movie.setReleaseYear(getReleaseDate(doc));
-		movie.setRating(getRating(doc));
-		parseDirectors(doc, movie);
-		parseWriters(doc, movie);
-		PAPI.addMovie(movie);
+		if (movie.getTitle() == null) movie.setTitle(getTitle(doc));
+		if (movie.getReleaseYear() == null) movie.setReleaseYear(getReleaseDate(doc));
+		if (movie.getRating() == null) movie.setRating(getRating(doc));
+		if (movie.getDirectors().isEmpty()) parseDirectors(doc, movie);
+		if (movie.getWriters().isEmpty()) parseWriters(doc, movie);
 		return movie;
 	}
 	

@@ -1,4 +1,4 @@
-package com.unai.impapi.rel;
+package com.unai.impapi.data.rel;
 
 import static com.unai.impapi.Utils.trim;
 

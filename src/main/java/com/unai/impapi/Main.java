@@ -19,7 +19,7 @@ import com.unai.impapi.parser.SearchPageParser;
 
 public class Main {
 	
-	public Options options() {
+	private Options options() {
 		Options options = new Options();
 		options.addOption(Option.builder("s").longOpt("search").desc("Use in search mode").build());
 		options.addOption(Option.builder("e").longOpt("exact").desc("Search for exact query, in search mode only").build());
