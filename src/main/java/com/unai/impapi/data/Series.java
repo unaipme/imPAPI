@@ -3,6 +3,7 @@ package com.unai.impapi.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.unai.impapi.data.rel.CreatedBy;
 import com.unai.impapi.data.rel.Starring;
 
@@ -17,6 +18,7 @@ public class Series extends Title {
 		super(id);
 	}
 	
+	@JsonIgnore
 	public Integer getStartYear() {
 		return startYear;
 	}
@@ -25,6 +27,7 @@ public class Series extends Title {
 		this.startYear = startYear;
 	}
 
+	@JsonIgnore
 	public Integer getEndYear() {
 		return endYear;
 	}
@@ -32,7 +35,11 @@ public class Series extends Title {
 	public void setEndYear(Integer endYear) {
 		this.endYear = endYear;
 	}
-
+	
+	public String getRunningYears() {
+		return String.format("(%d-%d)", startYear, endYear);
+	}
+	
 	public List<Starring> getStarring() {
 		return starList;
 	}
@@ -59,7 +66,7 @@ public class Series extends Title {
 		creatorList.add(c);
 	}
 
-	@Override
+	@Override @JsonIgnore
 	public int getType() {
 		return SERIES_TITLE;
 	}

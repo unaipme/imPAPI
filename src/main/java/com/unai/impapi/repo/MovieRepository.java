@@ -2,17 +2,17 @@ package com.unai.impapi.repo;
 
 import java.io.IOException;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import com.unai.impapi.data.Movie;
 import com.unai.impapi.parser.MoviePageParser;
 
-@Service
-public class MovieRepository {
+@Repository
+public class MovieRepository implements PapiRepository<Movie> {
 	
 	private MoviePageParser parser = new MoviePageParser();
 	
-	public Movie findById(String id) {
+	public Movie findOne(String id) {
 		if (!id.startsWith("tt")) return null;
 		else try {
 				return parser.parse(id);

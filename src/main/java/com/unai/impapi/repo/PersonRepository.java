@@ -2,17 +2,17 @@ package com.unai.impapi.repo;
 
 import java.io.IOException;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import com.unai.impapi.data.Person;
 import com.unai.impapi.parser.PersonPageParser;
 
-@Service
-public class PersonRepository {
+@Repository
+public class PersonRepository implements PapiRepository<Person> {
 	
 	private PersonPageParser parser = new PersonPageParser();
 	
-	public Person findById(String id) {
+	public Person findOne(String id) {
 		if (!id.startsWith("nm")) {
 			return null;
 		} else try {

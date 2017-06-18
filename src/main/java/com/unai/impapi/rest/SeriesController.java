@@ -8,35 +8,34 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.unai.impapi.data.Person;
-import com.unai.impapi.repo.PersonRepository;
+import com.unai.impapi.data.Series;
+import com.unai.impapi.repo.SeriesRepository;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/people")
-public class PersonController {
+@RequestMapping("/series")
+public class SeriesController {
 	
 	@Autowired
-	private PersonRepository personRepository;
+	private SeriesRepository repository;
 	
 	@GetMapping
 	public ResponseEntity<String> ping() {
-		return new ResponseEntity<>("OK", HttpStatus.OK);
+		return ResponseEntity.ok("OK");
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Person> getPersonWithId(@PathVariable String id) {
-		Person person = personRepository.findOne(id);
+	public ResponseEntity<Series> getSeriesWithId(@PathVariable String id) {
+		Series series = repository.findOne(id);
 		HttpStatus status = HttpStatus.OK;
-		if (person == null) status = HttpStatus.NOT_FOUND;
+		if (series == null) status = HttpStatus.NOT_FOUND;
 		else {
-			person.getKnownFor().forEach(k -> 
-				k.add(linkTo(methodOn(MovieController.class).getMovieWithId(k.getTitle().getId())).withSelfRel())
-			);
+			series.getCreatorList().forEach(c -> c.add(linkTo(methodOn(PersonController.class).getPersonWithId(c.getPerson().getId())).withSelfRel()));
+			series.getStarring().forEach(s -> s.add(linkTo(methodOn(PersonController.class).getPersonWithId(s.getStar().getId())).withSelfRel()));
 		}
-		return new ResponseEntity<>(person, status);
+		return new ResponseEntity<>(series, status);
 	}
 	
 }

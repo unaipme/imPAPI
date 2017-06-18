@@ -1,13 +1,18 @@
 package com.unai.impapi.data.rel;
 
+import org.springframework.hateoas.ResourceSupport;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.unai.impapi.data.Person;
 import com.unai.impapi.data.Series;
+import com.unai.impapi.parser.PersonPageParser;
 
-public class Starring {
+public class Starring extends ResourceSupport {
 	
 	private Person star;
 	private Series series;
 	
+	@JsonIgnore
 	public Person getStar() {
 		return star;
 	}
@@ -16,6 +21,11 @@ public class Starring {
 		this.star = star;
 	}
 	
+	public String getStarName() {
+		return star.getName();
+	}
+	
+	@JsonIgnore
 	public Series getSeries() {
 		return series;
 	}

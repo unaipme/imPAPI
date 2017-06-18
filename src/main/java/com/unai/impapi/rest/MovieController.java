@@ -27,7 +27,7 @@ public class MovieController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Movie> getMovieWithId(@PathVariable String id) {
-		Movie movie = movieRepository.findById(id);
+		Movie movie = movieRepository.findOne(id);
 		HttpStatus status = HttpStatus.OK;
 		if (movie == null) status = HttpStatus.NOT_FOUND;
 		else {
