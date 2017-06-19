@@ -1,10 +1,13 @@
 package com.unai.impapi.data.search;
 
+import org.springframework.hateoas.ResourceSupport;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.unai.impapi.data.Person;
+import com.unai.impapi.rest.PersonController;
 
-public class NameResult implements SearchResult {
+public class NameResult extends ResourceSupport implements SearchResult {
 	
 	private Person person;
 	private String detail;
@@ -27,7 +30,8 @@ public class NameResult implements SearchResult {
 
 	@JsonProperty("name")
 	public String getNameWithNumber() {
-		return String.format("%s (%s)", person.getName(), person.getNumber());
+		if (person.hasNumber())	return String.format("%s (%s)", person.getName(), person.getNumber());
+		else return person.getName();
 	}
 	
 	public String getDetail() {
@@ -100,6 +104,11 @@ public class NameResult implements SearchResult {
 			else s.append("\n");
 		}
 		return s.toString();
+	}
+
+	@Override
+	public Class<?> controllerClass() {
+		return PersonController.class;
 	}
 	
 }

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -31,6 +32,15 @@ public class SearchPageParser {
 	private Pattern yearPattern = Utils.yearPattern;
 	private Pattern romnumPattern = Utils.romnumPattern;
 	
+	private Document getDocument(String query, SearchType type, boolean isExact) throws IOException {
+		StringBuilder uri = new StringBuilder();
+		uri.append("http://www.imdb.com/find?");
+		uri.append(String.format("q=%s", query).replaceAll(" ", "+"));
+		uri.append(String.format("&s=%s", type.getAbbr().toLowerCase()));
+		uri.append(String.format("&exact=%s", Boolean.valueOf(isExact)));
+		return connect(uri.toString()).header("Accept-Language", "en-US").get();
+	}
+	
 	private List<SearchResult> parseResults(Document doc) {
 		final ArrayList<SearchResult> resultset = new ArrayList<>();
 		Elements sections = doc.select("div.findSection");
@@ -47,7 +57,17 @@ public class SearchPageParser {
 		return resultset;
 	}
 	
-	public List<NameResult> parseNameResults(Element el) {
+	
+	public List<NameResult> parseNameResults(String query, boolean isExact) {
+		try {
+			Element el = getDocument(query, SearchType.NAME, isExact);
+			return parseNameResults(el.select("div.findSection").stream().filter(t -> t.select("h3.findSectionHeader").get(0).ownText().equals("Names")).findFirst().get());
+		} catch (IOException | NoSuchElementException e) {
+			return new ArrayList<>();
+		}
+	}
+	
+	private List<NameResult> parseNameResults(Element el) {
 		final ArrayList<NameResult> nameList = new ArrayList<>();
 		ListIterator<Element> it = el.select("table.findList tr.findResult td.result_text").listIterator();
 		int amount = 1;
@@ -88,7 +108,16 @@ public class SearchPageParser {
 		return nameList;
 	}
 	
-	public List<TitleResult> parseTitleResults(Element el) {
+	public List<TitleResult> parseTitleResults(String query, boolean isExact) {
+		try {
+			Element el = getDocument(query, SearchType.TITLE, isExact);
+			return parseTitleResults(el.select("div.findSection").stream().filter(t -> t.select("h3.findSectionHeader").get(0).ownText().equals("Titles")).findFirst().get());
+		} catch (IOException|NoSuchElementException e) {
+			return new ArrayList<>();
+		}
+	}
+	
+	private List<TitleResult> parseTitleResults(Element el) {
 		final ArrayList<TitleResult> titleList = new ArrayList<>();
 		ListIterator<Element> it = el.select("table.findList tr.findResult td.result_text").listIterator();
 		int amount = 1;
@@ -123,26 +152,22 @@ public class SearchPageParser {
 			}
 			if (!e.select(">i").isEmpty()) {
 				String detail = e.ownText().replace(ifNullThen(result.getType(), ""), "")
-						.replace(result.getFormattedYear(), "");
-				result.setDetail(String.format("%s %s", detail, e.select(">i").get(0).text()));
+						.replace(result.getFormattedYear(), "").trim();
+				result.setDetail(String.format("%s %s", detail, e.select(">i").get(0).text().replaceAll("\"", "'")));
 			}
 			titleList.add(result);
 		}
 		return titleList;
 	}
 
-	public List<SearchResult> parse(String query, SearchType type, boolean isExact) throws IOException {
-		StringBuilder uri = new StringBuilder();
-		uri.append("http://www.imdb.com/find?");
-		uri.append(String.format("q=%s", query));
-		uri.append(String.format("&s=%s", type.getAbbr().toLowerCase()));
-		uri.append(String.format("&exact=%s", Boolean.valueOf(isExact)));
-		return parseResults(connect(uri.toString()).header("Accept-Language", "en-US").get());
+	public List<? extends SearchResult> parse(String query, SearchType type, boolean isExact) throws IOException {
+		return parseResults(getDocument(query, type, isExact));
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Map<SearchType, List<SearchResult>> parse(String query) throws IOException {
 		Map<SearchType, List<SearchResult>> result = new HashMap<>();
-		List<SearchResult> allResults = parse(query, SearchType.ALL, false);
+		List<SearchResult> allResults = (List<SearchResult>) parse(query, SearchType.ALL, false);
 		result.put(SearchType.NAME, allResults.stream().filter(r -> r instanceof NameResult).collect(Collectors.toList()));
 		result.put(SearchType.TITLE, allResults.stream().filter(r -> r instanceof TitleResult).collect(Collectors.toList()));
 		return result;

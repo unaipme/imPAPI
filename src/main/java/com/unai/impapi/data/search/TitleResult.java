@@ -1,10 +1,15 @@
 package com.unai.impapi.data.search;
 
+import org.springframework.hateoas.ResourceSupport;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.unai.impapi.data.Movie;
+import com.unai.impapi.rest.MovieController;
 
-public class TitleResult implements SearchResult {
+public class TitleResult extends ResourceSupport implements SearchResult {
 	
 	private Movie movie;
 	private String detail;
@@ -40,6 +45,7 @@ public class TitleResult implements SearchResult {
 		this.movie = movie;
 	}
 
+	@JsonInclude(Include.NON_NULL)
 	public String getDetail() {
 		return detail;
 	}
@@ -48,6 +54,7 @@ public class TitleResult implements SearchResult {
 		this.detail = detail;
 	}
 
+	@JsonInclude(Include.NON_NULL)
 	public String getType() {
 		return type;
 	}
@@ -71,6 +78,11 @@ public class TitleResult implements SearchResult {
 		else s.append("\n");
 		if (detail != null) s.append(String.format("\t%s%n", detail));
 		return s.toString();
+	}
+
+	@Override
+	public Class<?> controllerClass() {
+		return MovieController.class;
 	}
 
 }
