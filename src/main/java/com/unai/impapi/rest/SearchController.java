@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,9 +32,11 @@ public class SearchController {
 	}
 	
 	@GetMapping("/titles/{query}")
-	public List<TitleResult> searchTitles(@PathVariable String query) throws IOException {
-		List<TitleResult> results = parser.parseTitleResults(query, false);
-		results.forEach(r -> r.add(linkTo(methodOn(MovieController.class).getMovieWithId(r.getMovieId())).withSelfRel()));
+	public List<TitleResult> searchTitles(@PathVariable String query, HttpServletRequest req) throws IOException {
+		List<TitleResult> results;
+		if (req.getHeader("Accept-Language") != null) results = parser.parseTitleResults(query, false, req.getHeader("Accept-Language"));
+		else results = parser.parseTitleResults(query, false, "en-US");
+		results.forEach(r -> r.add(linkTo(methodOn(MovieController.class).getMovieWithId(r.getMovieId(), null)).withSelfRel()));
 		return results;
 	}
 	
@@ -44,9 +48,11 @@ public class SearchController {
 	}
 	
 	@GetMapping("/titles/{query}/exact")
-	public List<TitleResult> searchExactTitles(@PathVariable String query) throws IOException {
-		List<TitleResult> results = parser.parseTitleResults(query, true);
-		results.forEach(r -> r.add(linkTo(methodOn(MovieController.class).getMovieWithId(r.getMovieId())).withSelfRel()));
+	public List<TitleResult> searchExactTitles(@PathVariable String query, HttpServletRequest req) throws IOException {
+		List<TitleResult> results;
+		if (req.getHeader("Accept-Language") != null) results = parser.parseTitleResults(query, true, req.getHeader("Accept-Language"));
+		else results = parser.parseTitleResults(query, true, "en-US");
+		results.forEach(r -> r.add(linkTo(methodOn(MovieController.class).getMovieWithId(r.getMovieId(), null)).withSelfRel()));
 		return results;
 	}
 	

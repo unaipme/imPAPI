@@ -32,7 +32,7 @@ public class MoviePageParser implements PageParser<Movie> {
 	
 	private Double getRating(Document doc) {
 		String text = doc.select("span[itemprop=ratingValue]").get(0).text();
-		return Double.valueOf(text);
+		return Double.valueOf(text.replaceAll(",", "."));
 	}
 	
 	private Elements getDirectors(Document doc) {
@@ -95,13 +95,17 @@ public class MoviePageParser implements PageParser<Movie> {
 	}
 	
 	public Movie parse(String mId) throws IOException {
+		return parse(mId, "en-US");
+	}
+	
+	public Movie parse(String mId, String language) throws IOException {
 		Movie movie = null;
 		movie = (Movie) PAPI.findTitle(mId);
 		if (movie == null) {
 			movie = new Movie(mId);
 			PAPI.addTitle(movie);
 		}
-		Document doc = connect(String.format(URL_TEMPLATE, mId)).header("Accept-Language", "en-US").get();
+		Document doc = connect(String.format(URL_TEMPLATE, mId)).header("Accept-Language", language).get();
 		if (movie.getTitle() == null) movie.setTitle(getTitle(doc));
 		if (movie.getReleaseYear() == null) movie.setReleaseYear(getReleaseDate(doc));
 		if (movie.getRating() == null) movie.setRating(getRating(doc));

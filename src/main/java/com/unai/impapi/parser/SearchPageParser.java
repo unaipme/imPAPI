@@ -41,6 +41,15 @@ public class SearchPageParser {
 		return connect(uri.toString()).header("Accept-Language", "en-US").get();
 	}
 	
+	private Document getDocument(String query, SearchType type, boolean isExact, String language) throws IOException {
+		StringBuilder uri = new StringBuilder();
+		uri.append("http://www.imdb.com/find?");
+		uri.append(String.format("q=%s", query).replaceAll(" ", "+"));
+		uri.append(String.format("&s=%s", type.getAbbr().toLowerCase()));
+		uri.append(String.format("&exact=%s", Boolean.valueOf(isExact)));
+		return connect(uri.toString()).header("Accept-Language", language).get();
+	}
+	
 	private List<SearchResult> parseResults(Document doc) {
 		final ArrayList<SearchResult> resultset = new ArrayList<>();
 		Elements sections = doc.select("div.findSection");
@@ -108,9 +117,9 @@ public class SearchPageParser {
 		return nameList;
 	}
 	
-	public List<TitleResult> parseTitleResults(String query, boolean isExact) {
+	public List<TitleResult> parseTitleResults(String query, boolean isExact, String language) {
 		try {
-			Element el = getDocument(query, SearchType.TITLE, isExact);
+			Element el = getDocument(query, SearchType.TITLE, isExact, language);
 			return parseTitleResults(el.select("div.findSection").stream().filter(t -> t.select("h3.findSectionHeader").get(0).ownText().equals("Titles")).findFirst().get());
 		} catch (IOException|NoSuchElementException e) {
 			return new ArrayList<>();

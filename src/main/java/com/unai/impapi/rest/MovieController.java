@@ -1,5 +1,10 @@
 package com.unai.impapi.rest;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.unai.impapi.data.Movie;
 import com.unai.impapi.repo.MovieRepository;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping("/movies")
@@ -26,19 +29,14 @@ public class MovieController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Movie> getMovieWithId(@PathVariable String id) {
-		Movie movie = movieRepository.findOne(id);
+	public ResponseEntity<Movie> getMovieWithId(@PathVariable String id, @Autowired HttpServletRequest req) {
+		Movie movie = movieRepository.findOne(id, req.getHeader("Accept-Language"));
 		HttpStatus status = HttpStatus.OK;
 		if (movie == null) status = HttpStatus.NOT_FOUND;
 		else {
-			movie.getWriters().forEach(w -> 
-				w.add(linkTo(methodOn(PersonController.class).getPersonWithId(w.getWriterId())).withSelfRel())
-			);
-			movie.getDirectors().forEach(d -> 
-				d.add(linkTo(methodOn(PersonController.class).getPersonWithId(d.getDirectorId())).withSelfRel())
-			);
+			movie.getWriters().forEach(w -> w.add(linkTo(methodOn(PersonController.class).getPersonWithId(w.getWriterId())).withSelfRel()));
+			movie.getDirectors().forEach(d -> d.add(linkTo(methodOn(PersonController.class).getPersonWithId(d.getDirectorId())).withSelfRel()));
 		}
-			
 		return new ResponseEntity<>(movie, status);
 	}
 	

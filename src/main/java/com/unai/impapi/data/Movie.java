@@ -34,7 +34,7 @@ public class Movie extends Title {
 	}
 	
 	public void setRating(String s) {
-		this.rating = Double.valueOf(trim(s));
+		this.rating = Double.valueOf(trim(s).replaceAll(",", "."));
 	}
 
 	public String getTitle() {

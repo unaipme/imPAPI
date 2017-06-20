@@ -5,7 +5,6 @@ import org.springframework.hateoas.ResourceSupport;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.unai.impapi.data.Person;
 import com.unai.impapi.data.Series;
-import com.unai.impapi.parser.PersonPageParser;
 
 public class Starring extends ResourceSupport {
 	

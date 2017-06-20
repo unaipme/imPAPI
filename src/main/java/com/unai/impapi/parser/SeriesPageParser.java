@@ -36,7 +36,7 @@ public class SeriesPageParser implements PageParser<Series> {
 	}
 	
 	private Double getRating(Document doc) {
-		return Double.valueOf(doc.select("span[itemprop=ratingValue]").get(0).text());
+		return Double.valueOf(doc.select("span[itemprop=ratingValue]").get(0).text().replaceAll(",", "."));
 	}
 	
 	private Integer getStartYear(Document doc) {
