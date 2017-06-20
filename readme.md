@@ -65,7 +65,7 @@ To run imPAPI as a REST API, type the following command after cloning the reposi
 mvn spring-boot:run
 ```
 
-The REST endpoints will be available at [http://localhost:8080](http://localhost:8080). The documentation of all the endpoints is available at [http://localhost:8080/docs](http://localhost:8080/docs). Search mode is still not supported by the REST interface.
+The REST endpoints will be available at [http://localhost:8080](http://localhost:8080). The documentation of all the endpoints is available at [http://localhost:8080/docs](http://localhost:8080/docs). Search mode is now supported by the REST interface.
 
 ## Disclaimer
 
