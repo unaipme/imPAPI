@@ -30,7 +30,9 @@ public class MovieController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Movie> getMovieWithId(@PathVariable String id, @Autowired HttpServletRequest req) {
-		Movie movie = movieRepository.findOne(id, req.getHeader("Accept-Language"));
+		Movie movie = null;
+		if (req.getHeader("Accept-Language") != null) movie = movieRepository.findOne(id, req.getHeader("Accept-Language"));
+		else movie = movieRepository.findOne(id);
 		HttpStatus status = HttpStatus.OK;
 		if (movie == null) status = HttpStatus.NOT_FOUND;
 		else {

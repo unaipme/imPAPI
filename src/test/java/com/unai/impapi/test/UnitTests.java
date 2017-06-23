@@ -59,11 +59,11 @@ public class UnitTests {
 		WrittenBy secondWriter = movie.getWriters().get(1);
 		assertEquals("First writer's name is not parsed correctly", "Robert Gordon", firstWriter.getWriterName());
 		assertEquals("First writer's ID is not parsed correctly", "nm0330565", firstWriter.getWriterId());
-		//assertEquals("First writer's detail is not parsed correctly", "screenplay", firstWriter.getDetail());
+		assertEquals("First writer's detail is not parsed correctly", "screenplay", firstWriter.getDetails().get(0));
 		assertNull("First writer's pseudonym should be null, is not", firstWriter.getAs());
 		assertEquals("Second writer's name is not parsed correctly", "Daniel Handler", secondWriter.getWriterName());
 		assertEquals("Second writer's ID is not parsed correctly", "nm1274516", secondWriter.getWriterId());
-		//assertEquals("Second writer's detail is not parsed correctly", "books", secondWriter.getDetail());
+		assertEquals("Second writer's detail is not parsed correctly", "books", secondWriter.getDetails().get(0));
 		assertEquals("Second writer's pseudonym is not parsed correctly", "Lemony Snicket", secondWriter.getAs());
 	}
 	

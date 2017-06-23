@@ -64,7 +64,8 @@ public class RestUnitTests {
 	
 	@Test
 	public void movieControllerTest() throws Exception {
-		mvc.perform(get("/movies/tt0339291"))
+		mvc.perform(get("/movies/tt0339291")
+				.header("Accept-Language", "en-US"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.title", is("A Series of Unfortunate Events")))
 			.andExpect(jsonPath("$.rating", greaterThanOrEqualTo(6.5)))
@@ -72,10 +73,10 @@ public class RestUnitTests {
 			.andExpect(jsonPath("$.releaseYear", is(2004)))
 			.andExpect(jsonPath("$.directedBy[0].name", is("Brad Silberling")))
 			.andExpect(jsonPath("$.writtenBy[0].name", is("Robert Gordon")))
-			.andExpect(jsonPath("$.writtenBy[0].detail", is("screenplay")))
+			.andExpect(jsonPath("$.writtenBy[0].details[0]", is("screenplay")))
 			.andExpect(jsonPath("$.writtenBy[0].as").doesNotExist())
 			.andExpect(jsonPath("$.writtenBy[1].name", is("Daniel Handler")))
-			.andExpect(jsonPath("$.writtenBy[1].detail", is("books")))
+			.andExpect(jsonPath("$.writtenBy[1].details[0]", is("books")))
 			.andExpect(jsonPath("$.writtenBy[1].as", is("Lemony Snicket")));
 	}
 	
