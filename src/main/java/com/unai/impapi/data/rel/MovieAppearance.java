@@ -1,5 +1,8 @@
 package com.unai.impapi.data.rel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -12,7 +15,7 @@ public class MovieAppearance {
 	private Movie movie;
 	private Person person;
 	private TitleCharacter character;
-	private String detail;
+	private List<String> details = new ArrayList<>();
 	private String as;
 	
 	@JsonIgnore
@@ -51,13 +54,13 @@ public class MovieAppearance {
 		return character.getName();
 	}
 	
-	@JsonInclude(Include.NON_NULL)
-	public String getDetail() {
-		return detail;
+	@JsonInclude(Include.NON_EMPTY)
+	public List<String> getDetails() {
+		return details;
 	}
 	
-	public void setDetail(String detail) {
-		this.detail = detail;
+	public void addDetail(String d) {
+		details.add(d);
 	}
 
 	@JsonInclude(Include.NON_NULL)

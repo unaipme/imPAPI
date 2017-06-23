@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.lessThanOrEqualTo;
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes=RestMain.class)
-public class RestUnitTests {
+public class RestIntegrationTests {
 	
 	@Autowired
 	private WebApplicationContext context;

@@ -1,5 +1,6 @@
 package com.unai.impapi.parser;
 
+import static com.unai.impapi.Utils.ifNullThen;
 import static org.jsoup.Jsoup.connect;
 
 import java.io.IOException;
@@ -11,7 +12,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.google.common.base.Optional;
 import com.unai.impapi.PAPI;
 import com.unai.impapi.Utils;
 import com.unai.impapi.data.Movie;
@@ -110,6 +110,11 @@ public class MoviePageParser implements PageParser<Movie> {
 				String as = asMatcher.group();
 				app.setAs(as.substring(4, as.length() - 1));
 			}
+			Matcher detailMatcher = detailPattern.matcher(e.select("td.character div").get(0).text().replace("(as " + ifNullThen(app.getAs() + ")", ""), ""));
+			while (detailMatcher.find()) {
+				String detail = detailMatcher.group();
+				app.addDetail(detail.substring(1, detail.length() - 1));
+			}
 			app.setPerson(p);
 			if (!e.select("td.character>div>a").isEmpty()) {
 				href = e.select("td.character>div>a").get(0).attr("href");
@@ -117,12 +122,15 @@ public class MoviePageParser implements PageParser<Movie> {
 				c = PAPI.findCharacter(cId);
 				if (c == null) {
 					c = new TitleCharacter(cId);
+					c.setName(e.select("td.character>div>a").get(0).ownText());
 					PAPI.addCharacter(c);
 				}
 			} else {
 				c = new TitleCharacter();
+				String name = e.select("td.character>div").get(0).text().replace("(as " + ifNullThen(app.getAs(), "") + ")", "").replaceAll("\"", "'").trim();
+				app.getDetails().forEach(d -> name.replace("(" + d + ")", ""));
+				c.setName(name);
 			}
-			c.setName(e.select("td.character>div").get(0).text().replace("(as " + app.getAs() + ")", "").replaceAll("\"", "'").trim());
 			app.setCharacter(c);
 			app.setMovie(movie);
 			movie.addAppearance(app);
@@ -151,7 +159,7 @@ public class MoviePageParser implements PageParser<Movie> {
 				if (asMatcher.find()) {
 					directedBy.setAs(asMatcher.group());
 				}
-				Matcher detailMatcher = detailPattern.matcher(e.select("td.credit").get(0).ownText().replaceAll("(as " + Optional.fromNullable(directedBy.getAs()).or("") + ")", ""));
+				Matcher detailMatcher = detailPattern.matcher(e.select("td.credit").get(0).ownText().replaceAll("(as " + ifNullThen(directedBy.getAs(), "") + ")", ""));
 				while (detailMatcher.find()) {
 					String match = detailMatcher.group();
 					directedBy.addDetail(match.substring(1, match.length() - 1).replaceAll("\"", "'"));
@@ -183,7 +191,7 @@ public class MoviePageParser implements PageParser<Movie> {
 				if (asMatcher.find()) {
 					writtenBy.setAs(asMatcher.group());
 				}
-				Matcher detailMatcher = detailPattern.matcher(e.select("td.credit").get(0).ownText().replaceAll("(as " + Optional.fromNullable(writtenBy.getAs()).or("") + ")", ""));
+				Matcher detailMatcher = detailPattern.matcher(e.select("td.credit").get(0).ownText().replaceAll("(as " + ifNullThen(writtenBy.getAs(), "") + ")", ""));
 				while (detailMatcher.find()) {
 					String match = detailMatcher.group();
 					writtenBy.addDetail(match.substring(1, match.length() - 1).replaceAll("\"", "'"));

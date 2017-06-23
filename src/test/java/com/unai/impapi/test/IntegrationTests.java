@@ -12,13 +12,14 @@ import org.junit.Test;
 import com.unai.impapi.data.Movie;
 import com.unai.impapi.data.Person;
 import com.unai.impapi.data.rel.DirectedBy;
+import com.unai.impapi.data.rel.MovieAppearance;
 import com.unai.impapi.data.rel.PersonKnownForRole;
 import com.unai.impapi.data.rel.WrittenBy;
 import com.unai.impapi.exception.WrongIdTypeException;
 import com.unai.impapi.parser.MoviePageParser;
 import com.unai.impapi.parser.PersonPageParser;
 
-public class UnitTests {
+public class IntegrationTests {
 
 	private PersonPageParser personParser;
 	private MoviePageParser movieParser;
@@ -51,10 +52,12 @@ public class UnitTests {
 		assertTrue("Rating is not parsed correctly", movie.getRating() < 7.5 && movie.getRating() > 6.5);
 		assertEquals("Release year is not parsed correctly", 2004, movie.getReleaseYear().intValue());
 		assertEquals("The amount of directors must be 1, is not", movie.getDirectors().size(), 1);
+		
 		DirectedBy director = movie.getDirectors().get(0);
 		assertEquals("Director's name is not parsed correctly", "Brad Silberling", director.getDirectorName());
 		assertNull("Director's pseudonym should be null, is not", director.getAs());
 		assertEquals("The amount of writers must be 2, is not", movie.getWriters().size(), 2);
+		
 		WrittenBy firstWriter = movie.getWriters().get(0);
 		WrittenBy secondWriter = movie.getWriters().get(1);
 		assertEquals("First writer's name is not parsed correctly", "Robert Gordon", firstWriter.getWriterName());
@@ -65,6 +68,18 @@ public class UnitTests {
 		assertEquals("Second writer's ID is not parsed correctly", "nm1274516", secondWriter.getWriterId());
 		assertEquals("Second writer's detail is not parsed correctly", "books", secondWriter.getDetails().get(0));
 		assertEquals("Second writer's pseudonym is not parsed correctly", "Lemony Snicket", secondWriter.getAs());
+		
+		MovieAppearance app_0 = movie.getCast().get(0);
+		MovieAppearance app_5 = movie.getCast().get(5);
+		MovieAppearance app_10 = movie.getCast().get(10);
+		assertEquals("First credited actor's name not parsed correctly", "Jim Carrey", app_0.getPersonName());
+		assertEquals("First credited actor's character not parsed correctly", "Count Olaf", app_0.getCharacterName());
+		assertTrue("First credited actor's role detail should be null", app_0.getDetails().isEmpty());
+		assertNull("First credited actor's pseudonym should be null", app_0.getAs());
+		assertEquals("Fifth credited actor's name not parsed correctly", "Jude Law", app_5.getPersonName());
+		assertEquals("Fifth credited actor's role detail not parsed correctly", "voice", app_5.getDetails().get(0));
+		assertEquals("Tenth credited actor's name not parsed correctly", "Luis Guzmán", app_10.getPersonName());
+		assertEquals("Tenth credited actor's pseudonym not parsed correctly", "Luis Guzman", app_10.getAs());
 	}
 	
 	@Test(expected = WrongIdTypeException.class)

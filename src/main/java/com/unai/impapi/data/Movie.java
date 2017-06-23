@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.unai.impapi.data.rel.DirectedBy;
 import com.unai.impapi.data.rel.MovieAppearance;
@@ -92,6 +94,7 @@ public class Movie extends Title {
 		return cast.stream().map(MovieAppearance::getPerson).collect(Collectors.toList());
 	}
 	
+	@JsonInclude(Include.NON_NULL)
 	public String getNumber() {
 		return number;
 	}
