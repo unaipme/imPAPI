@@ -10,8 +10,6 @@ import com.unai.impapi.parser.MoviePageParser;
 @Repository
 public class MovieRepository implements PapiRepository<Movie> {
 	
-	private MoviePageParser parser = new MoviePageParser();
-	
 	public Movie findOne(String id) {
 		return findOne(id, "en-US");
 	}
@@ -19,7 +17,7 @@ public class MovieRepository implements PapiRepository<Movie> {
 	public Movie findOne(String id, String language) {
 		if (!id.startsWith("tt")) return null;
 		else try {
-				return parser.parse(id, (language==null) ? "en-US" : language);
+				return new MoviePageParser(id, language).parse();
 			} catch (IOException e) {
 				return null;
 			}

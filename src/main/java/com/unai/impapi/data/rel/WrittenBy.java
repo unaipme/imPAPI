@@ -2,6 +2,9 @@ package com.unai.impapi.data.rel;
 
 import static com.unai.impapi.Utils.trim;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.hateoas.ResourceSupport;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -16,7 +19,7 @@ public class WrittenBy extends ResourceSupport {
 	private Person writer;
 	private Movie movie;
 	private String as;
-	private String detail;
+	private List<String> detail = new ArrayList<>();
 	
 	@JsonProperty("name")
 	public String getWriterName() {
@@ -47,13 +50,13 @@ public class WrittenBy extends ResourceSupport {
 			this.as = null;
 	}
 	
-	@JsonInclude(Include.NON_NULL)
-	public String getDetail() {
+	@JsonInclude(Include.NON_EMPTY)
+	public List<String> getDetails() {
 		return detail;
 	}
 	
-	public void setDetail(String detail) {
-		this.detail = detail.substring(1, detail.length() - 1);
+	public void addDetail(String d) {
+		detail.add(d);
 	}
 	
 	@JsonIgnore
@@ -78,7 +81,7 @@ public class WrittenBy extends ResourceSupport {
 			if (i.startsWith("as ")) {
 				setAs("(" + i + ")");
 			} else
-				setDetail("(" + i + ")");
+				addDetail(i);
 		}
 	}
 

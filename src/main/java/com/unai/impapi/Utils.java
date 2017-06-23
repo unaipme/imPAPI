@@ -2,6 +2,7 @@ package com.unai.impapi;
 
 import static com.unai.impapi.parser.SeriesPageParser.isSeriesPage;
 
+import java.io.IOException;
 import java.util.ListIterator;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -20,6 +21,8 @@ public final class Utils {
 	public static final Pattern yearPattern = Pattern.compile("[(]([0-9]){4}[)]");
 	public static final Pattern romnumPattern = Pattern.compile("[(]([IVXLCDM])+[)]");
 	public static final Pattern intervalPattern = Pattern.compile("[(]([0-9]){4}[–]([0-9]){4}[)]");
+	public static final Pattern asPattern = Pattern.compile("[(](as )[a-zA-Z\\s\\.\\\"]+[)]");
+	public static final Pattern detailPattern = Pattern.compile("[(][a-zA-Z\\s\\.\\\"\\-\\:]+[)]");
 	
 	private Utils() {}
 	
@@ -34,12 +37,12 @@ public final class Utils {
 		}
 	}
 	
-	public static PageParser<? extends PageData> autoparser(String id) {
+	public static PageParser<? extends PageData> autoparser(String id) throws IOException {
 		if (id.startsWith("tt")) {
-			if (isSeriesPage(id)) return new SeriesPageParser();
-			else return new MoviePageParser();
+			if (isSeriesPage(id)) return new SeriesPageParser(id);
+			else return new MoviePageParser(id);
 		} else if (id.startsWith("nm")) {
-			return new PersonPageParser();
+			return new PersonPageParser(id);
 		}
 		return null;
 	}

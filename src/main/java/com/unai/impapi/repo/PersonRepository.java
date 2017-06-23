@@ -10,13 +10,11 @@ import com.unai.impapi.parser.PersonPageParser;
 @Repository
 public class PersonRepository implements PapiRepository<Person> {
 	
-	private PersonPageParser parser = new PersonPageParser();
-	
 	public Person findOne(String id) {
 		if (!id.startsWith("nm")) {
 			return null;
 		} else try {
-				return parser.parse(id);
+				return new PersonPageParser(id).parse();
 			} catch (IOException e) {
 				return null;
 			}

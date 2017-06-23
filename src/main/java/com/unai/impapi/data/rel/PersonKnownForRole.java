@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.unai.impapi.data.Person;
 import com.unai.impapi.data.Title;
 
-public class Role extends ResourceSupport {
+public class PersonKnownForRole extends ResourceSupport {
 	
 	private Title title;
 	private Person person;
@@ -47,8 +47,8 @@ public class Role extends ResourceSupport {
 	@Override
 	public boolean equals(Object o) {
 		if (o == null) return false;
-		if (!(o instanceof Role)) return false;
-		Role r = (Role) o;
+		if (!(o instanceof PersonKnownForRole)) return false;
+		PersonKnownForRole r = (PersonKnownForRole) o;
 		return r.getTitle().equals(title) && r.getPerson().equals(person) && r.getRoleName().equals(roleName);
 	}
 	

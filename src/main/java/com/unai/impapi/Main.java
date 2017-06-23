@@ -57,17 +57,21 @@ public class Main {
 			System.out.println("ID must be specified.");
 			System.exit(-1);
 		}
-		PageParser<? extends PageData> parser = autoparser(id);
-		if (parser == null) {
-			System.out.println("No parser could be found for the given ID");
-			System.exit(-1);
-		} else {
-			try {
-				System.out.println(parser.parse(id));
-			} catch (IOException e) {
-				System.out.println("The parser failed");
+		try {
+			PageParser<? extends PageData> parser = autoparser(id);
+			if (parser == null) {
+				System.out.println("No parser could be found for the given ID");
 				System.exit(-1);
+			} else {
+				try {
+					System.out.println(parser.parse());
+				} catch (IOException e) {
+					System.out.println("The parser failed");
+					System.exit(-1);
+				}
 			}
+		} catch (IOException e1) {
+			System.out.println("An error happened when trying to get the page for the given ID.");
 		}
 	}
 	

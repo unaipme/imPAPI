@@ -1,12 +1,12 @@
 package com.unai.impapi.parser;
 
-import static com.unai.impapi.Utils.iterate;
 import static org.jsoup.Jsoup.connect;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -20,7 +20,7 @@ import com.unai.impapi.data.Movie;
 import com.unai.impapi.data.Person;
 import com.unai.impapi.data.Series;
 import com.unai.impapi.data.Title;
-import com.unai.impapi.data.rel.Role;
+import com.unai.impapi.data.rel.PersonKnownForRole;
 
 public class PersonPageParser implements PageParser<Person> {
 	
@@ -28,22 +28,30 @@ public class PersonPageParser implements PageParser<Person> {
 	
 	private static final Pattern intervalPattern = Utils.intervalPattern;
 	
-	private Document loadPage(String id) throws IOException {
-		return connect(String.format(TEMPLATE_URL, id)).header("Accept-Language", "en-US").get();
+	private Person person;
+	private Document personPage;
+	
+	public PersonPageParser(String id) throws IOException {
+		this.person = PAPI.findPerson(id);
+		if (this.person == null) {
+			this.person = new Person(id);
+			PAPI.addPerson(this.person);
+		}
+		this.personPage = connect(String.format(TEMPLATE_URL, id)).header("Accept-Language", "en-US").get();
 	}
 	
-	private String getName(Document doc) {
-		return doc.select("span.itemprop[itemprop=name]").get(0).text();
+	private String getName() {
+		return personPage.select("span.itemprop[itemprop=name]").get(0).text();
 	}
 	
-	private LocalDate getBirthday(Document doc) {
-		String [] nums  = doc.select("time[itemprop=birthDate]").get(0).attr("datetime").split("-");
+	private LocalDate getBirthday() {
+		String [] nums  = personPage.select("time[itemprop=birthDate]").get(0).attr("datetime").split("-");
 		List<Integer> list = Arrays.asList(nums).stream().map(Integer::valueOf).collect(Collectors.toList());
 		return LocalDate.of(list.get(0), list.get(1), list.get(2));
 	}
 	
-	private String getBirthplace(Document doc) {
-		return doc.select("div#name-born-info>a").text();
+	private String getBirthplace() {
+		return personPage.select("div#name-born-info>a").text();
 	}
 	
 	private String getKnownForMovieTitle(Element el) {
@@ -78,9 +86,11 @@ public class PersonPageParser implements PageParser<Person> {
 		return true;
 	}
 	
-	private void parseKnownFor(Document doc, Person person) {
-		iterate(doc.select("div.knownfor-title"), e -> {
-			Role role = new Role();
+	private void parseKnownFor() {
+		ListIterator<Element> it = personPage.select("div.knownfor-title").listIterator();
+		while (it.hasNext()) {
+			Element e = it.next();
+			PersonKnownForRole role = new PersonKnownForRole();
 			boolean isMovie = isKnownForMovie(e);
 			Title title = null;
 			String titleId = getKnownForMovieId(e);
@@ -99,20 +109,17 @@ public class PersonPageParser implements PageParser<Person> {
 			title.setTitle(getKnownForMovieTitle(e));
 			role.setTitle(title);
 			role.setPerson(person);
-			role.setRoleName(getKnownForRole(e));
+			role.setRoleName(getKnownForRole(e).replaceAll("\"", "'"));
 			person.addKnownForRole(role);
-		});
+		}
 	}
 
 	@Override
-	public Person parse(String id) throws IOException {
-		Person person = new Person(id);
-		Document doc = loadPage(id);
-		person.setName(getName(doc));
-		person.setBirthday(getBirthday(doc));
-		person.setBirthplace(getBirthplace(doc));
-		parseKnownFor(doc, person);
-		PAPI.addPerson(person);
+	public Person parse() throws IOException {
+		if (person.getName() == null) person.setName(getName());
+		if (person.getBirthday() == null) person.setBirthday(getBirthday());
+		if (person.getBirthplace() == null) person.setBirthplace(getBirthplace());
+		if (person.getKnownFor().isEmpty()) parseKnownFor();
 		return person;
 	}
 

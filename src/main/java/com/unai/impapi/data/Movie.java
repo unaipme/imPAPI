@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.unai.impapi.data.rel.DirectedBy;
+import com.unai.impapi.data.rel.MovieAppearance;
 import com.unai.impapi.data.rel.WrittenBy;
 
 public class Movie extends Title {
@@ -16,6 +17,7 @@ public class Movie extends Title {
 	private Integer releaseYear;
 	private List<DirectedBy> directors = new ArrayList<>();
 	private List<WrittenBy> writers = new ArrayList<>();
+	private List<MovieAppearance> cast = new ArrayList<>();
 	
 	public Movie(String id) {
 		super(id);
@@ -80,6 +82,16 @@ public class Movie extends Title {
 		return writers.stream().map(WrittenBy::getWriter).collect(Collectors.toList());
 	}
 	
+	@JsonProperty("cast")
+	public List<MovieAppearance> getCast() {
+		return cast;
+	}
+	
+	@JsonIgnore
+	public List<Person> getCastList() {
+		return cast.stream().map(MovieAppearance::getPerson).collect(Collectors.toList());
+	}
+	
 	public String getNumber() {
 		return number;
 	}
@@ -106,6 +118,15 @@ public class Movie extends Title {
 		writers.add(p);
 	}
 	
+	public Movie withAppearance(MovieAppearance a) {
+		cast.add(a);
+		return this;
+	}
+	
+	public void addAppearance(MovieAppearance a) {
+		cast.add(a);
+	}
+	
 	public boolean hasNumber() {
 		return number != null;
 	}
@@ -116,17 +137,21 @@ public class Movie extends Title {
 		s.append(String.format("%s (%d) *%.1f%n", title, releaseYear, rating));
 		s.append("Directed by:\n");
 		directors.forEach(d -> {
-			if (d.getAs() != null) s.append(String.format("\t%s (as %s)%n", d.getDirector().getName(), d.getAs()));
-			else s.append(String.format("\t%s\n", d.getDirector().getName()));
+			s.append(String.format("\t%s ", d.getDirectorName()));
+			if (d.getAs() != null) s.append(String.format("(as %s) ", d.getAs()));
+			if (!d.getDetails().isEmpty()) d.getDetails().forEach(f -> s.append(String.format("(%s)", f)));
+			s.append("\n");
 		});
 		s.append("Written by:\n");
 		writers.forEach(w -> {
-			if (w.getAs() != null) {
-				if (w.getDetail() != null) s.append(String.format("\t%s (%s) (as %s)%n", w.getWriter().getName(), w.getDetail(), w.getAs()));
-				else s.append(String.format("\t%s (as %s)%n", w.getWriter().getName(), w.getAs()));
-			} else if (w.getDetail() != null)
-				s.append(String.format("\t%s (%s)%n", w.getWriter().getName(), w.getDetail()));
-			else s.append(String.format("\t%s%n", w.getWriter().getName()));
+			s.append(String.format("\t%s ", w.getWriterName()));
+			if (w.getAs() != null) s.append(String.format("(as %s) ", w.getAs()));
+			w.getDetails().forEach(f -> s.append(String.format("(%s)", f)));
+			s.append("\n");
+		});
+		s.append("Cast:\n");
+		cast.forEach(a -> {
+			s.append(String.format("\t%s plays %s%n", a.getPerson().getName(), a.getCharacter().getName()));
 		});
 		return s.toString();
 	}

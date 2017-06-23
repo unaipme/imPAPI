@@ -9,14 +9,12 @@ import com.unai.impapi.parser.SeriesPageParser;
 
 @Repository
 public class SeriesRepository implements PapiRepository<Series> {
-	
-	private SeriesPageParser parser = new SeriesPageParser();
 
 	public Series findOne(String id) {
 		if (!id.startsWith("tt")) {
 			return null;
 		} else try {
-			return parser.parse(id);
+			return new SeriesPageParser(id).parse();
 		} catch (IOException e) {
 			return null;
 		}

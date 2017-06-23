@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.unai.impapi.data.Person;
 import com.unai.impapi.data.Series;
 
-public class Starring extends ResourceSupport {
+public class StarringInSeries extends ResourceSupport {
 	
 	private Person star;
 	private Series series;

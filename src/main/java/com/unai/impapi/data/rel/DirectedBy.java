@@ -2,6 +2,9 @@ package com.unai.impapi.data.rel;
 
 import static com.unai.impapi.Utils.trim;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.hateoas.ResourceSupport;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,6 +18,7 @@ public class DirectedBy extends ResourceSupport {
 	
 	private Person director;
 	private String as;
+	private List<String> detail = new ArrayList<>();
 	private Movie movie;
 	
 	@JsonProperty("name")
@@ -55,6 +59,14 @@ public class DirectedBy extends ResourceSupport {
 		this.movie = movie;
 	}
 	
+	public List<String> getDetails() {
+		return detail;
+	}
+
+	public void addDetail(String d) {
+		detail.add(d);
+	}
+
 	@JsonIgnore
 	public String getDirectorId() {
 		return director.getId();

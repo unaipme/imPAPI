@@ -15,12 +15,28 @@ import com.unai.impapi.Utils;
 import com.unai.impapi.data.Person;
 import com.unai.impapi.data.Series;
 import com.unai.impapi.data.rel.CreatedBy;
-import com.unai.impapi.data.rel.Starring;
+import com.unai.impapi.data.rel.StarringInSeries;
 
 public class SeriesPageParser implements PageParser<Series> {
 	
 	private final static String URL_TEMPLATE = "https://www.imdb.com/title/%s";
 	private final static Pattern intervalPattern = Utils.intervalPattern;
+	
+	private Series series;
+	private Document seriesPage;
+	
+	public SeriesPageParser(String id, String language) throws IOException {
+		series = (Series) PAPI.findTitle(id);
+		if (series == null) {
+			series = new Series(id);
+			PAPI.addTitle(series);
+		}
+		seriesPage = connect(String.format(URL_TEMPLATE, id)).header("Accept-Language", language).get();
+	}
+	
+	public SeriesPageParser(String id) throws IOException {
+		this(id, "en-US");
+	}
 	
 	public static boolean isSeriesPage(String id) {
 		try {
@@ -31,30 +47,30 @@ public class SeriesPageParser implements PageParser<Series> {
 		}
 	}
 	
-	private String getTitle(Document doc) {
-		return trim(doc.select("h1[itemprop=name]").get(0).text());
+	private String getTitle() {
+		return trim(seriesPage.select("h1[itemprop=name]").get(0).text());
 	}
 	
-	private Double getRating(Document doc) {
-		return Double.valueOf(doc.select("span[itemprop=ratingValue]").get(0).text().replaceAll(",", "."));
+	private Double getRating() {
+		return Double.valueOf(seriesPage.select("span[itemprop=ratingValue]").get(0).text().replaceAll(",", "."));
 	}
 	
-	private Integer getStartYear(Document doc) {
-		Matcher m = intervalPattern.matcher(doc.select("a[title=See more release dates]").get(0).text());
+	private Integer getStartYear() {
+		Matcher m = intervalPattern.matcher(seriesPage.select("a[title=See more release dates]").get(0).text());
 		if (m.find()) {
 			return Integer.valueOf(m.group().substring(1, 5));
 		} else return null;
 	}
 	
-	private Integer getEndYear(Document doc) {
-		Matcher m = intervalPattern.matcher(doc.select("a[title=See more release dates]").get(0).text());
+	private Integer getEndYear() {
+		Matcher m = intervalPattern.matcher(seriesPage.select("a[title=See more release dates]").get(0).text());
 		if (m.find()) {
 			return Integer.valueOf(m.group().substring(6, 10));
 		} else return null;
 	}
 	
-	private void parseCreators(Document doc, Series series) {
-		iterate(doc.select("span[itemprop=creator]>a[href$=tt_ov_wr]"), el -> {
+	private void parseCreators() {
+		iterate(seriesPage.select("span[itemprop=creator]>a[href$=tt_ov_wr]"), el -> {
 			CreatedBy createdBy = new CreatedBy();
 			Person p = null;
 			String personId = el.attr("href").substring("/name/".length(), el.attr("href").length() - "?ref_=tt_ov_wr".length());
@@ -70,9 +86,9 @@ public class SeriesPageParser implements PageParser<Series> {
 		});
 	}
 	
-	private void parseStars(Document doc, Series series) {
-		iterate(doc.select("span[itemprop=actors]>a[href$=tt_ov_st_sm]"), el -> {
-			Starring starring = new Starring();
+	private void parseStars() {
+		iterate(seriesPage.select("span[itemprop=actors]>a[href$=tt_ov_st_sm]"), el -> {
+			StarringInSeries starring = new StarringInSeries();
 			Person p = null;
 			String personId = el.attr("href").substring("/name/".length(), el.attr("href").length() - "?ref_=tt_ov_st_sm".length());
 			p = PAPI.findPerson(personId);
@@ -88,20 +104,13 @@ public class SeriesPageParser implements PageParser<Series> {
 	}
 
 	@Override
-	public Series parse(String id) throws IOException {
-		Series series = null;
-		series = (Series) PAPI.findTitle(id);
-		if (series == null) {
-			series = new Series(id);
-			PAPI.addTitle(series);
-		}
-		Document doc = connect(String.format(URL_TEMPLATE, id)).header("Accept-Language", "en-US").get();
-		if (series.getTitle() == null) series.setTitle(getTitle(doc));
-		if (series.getRating() == null) series.setRating(getRating(doc));
-		if (series.getStartYear() == null) series.setStartYear(getStartYear(doc));
-		if (series.getEndYear() == null) series.setEndYear(getEndYear(doc));
-		if (series.getCreatorList().isEmpty()) parseCreators(doc, series);
-		if (series.getStarring().isEmpty()) parseStars(doc, series);
+	public Series parse() throws IOException {
+		if (series.getTitle() == null) series.setTitle(getTitle());
+		if (series.getRating() == null) series.setRating(getRating());
+		if (series.getStartYear() == null) series.setStartYear(getStartYear());
+		if (series.getEndYear() == null) series.setEndYear(getEndYear());
+		if (series.getCreatorList().isEmpty()) parseCreators();
+		if (series.getStarring().isEmpty()) parseStars();
 		return series;
 	}
 

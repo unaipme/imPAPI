@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Locale;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.unai.impapi.data.rel.Role;
+import com.unai.impapi.data.rel.PersonKnownForRole;
 import com.unai.impapi.exception.WrongIdTypeException;
 
 public class Person implements PageData {
@@ -18,7 +20,7 @@ public class Person implements PageData {
 	private String id;
 	private String birthplace;
 	private LocalDate birthday;
-	private List<Role> knownFor = new ArrayList<>();
+	private List<PersonKnownForRole> knownFor = new ArrayList<>();
 	private String number;
 
 	public Person(String id) {
@@ -64,10 +66,11 @@ public class Person implements PageData {
 		this.name = name;
 	}
 	
-	public List<Role> getKnownFor() {
+	public List<PersonKnownForRole> getKnownFor() {
 		return knownFor;
 	}
 
+	@JsonInclude(Include.NON_NULL)
 	public String getNumber() {
 		return number;
 	}
@@ -108,11 +111,11 @@ public class Person implements PageData {
 		return s.toString();
 	}
 	
-	public void addKnownForRole(Role role) {
+	public void addKnownForRole(PersonKnownForRole role) {
 		knownFor.add(role);
 	}
 	
-	public Person isKnownFor(Role role) {
+	public Person isKnownFor(PersonKnownForRole role) {
 		knownFor.add(role);
 		return this;
 	}
