@@ -3,8 +3,6 @@ package com.unai.impapi.parser;
 import static com.unai.impapi.Utils.iterate;
 import static com.unai.impapi.Utils.trim;
 import static org.jsoup.Jsoup.connect;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -19,7 +17,6 @@ import com.unai.impapi.data.Series;
 import com.unai.impapi.data.rel.CreatedBy;
 import com.unai.impapi.data.rel.StarringInSeries;
 import com.unai.impapi.exception.WrongIdTypeException;
-import com.unai.impapi.rest.PersonController;
 
 public class SeriesPageParser implements PageParser<Series> {
 	
@@ -90,7 +87,6 @@ public class SeriesPageParser implements PageParser<Series> {
 			p.setName(el.child(0).text());
 			createdBy.setPerson(p);
 			createdBy.setSeries(series);
-			createdBy.add(linkTo(methodOn(PersonController.class).getPersonWithId(personId)).withSelfRel());
 			series.addCreator(createdBy);
 		});
 	}
@@ -108,7 +104,6 @@ public class SeriesPageParser implements PageParser<Series> {
 			p.setName(el.child(0).text());
 			starring.setStar(p);
 			starring.setSeries(series);
-			starring.add(linkTo(methodOn(PersonController.class).getPersonWithId(personId)).withSelfRel());
 			series.addStar(starring);
 		});
 	}

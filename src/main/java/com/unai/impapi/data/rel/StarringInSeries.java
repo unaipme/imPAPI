@@ -38,4 +38,9 @@ public class StarringInSeries extends ResourceSupport {
 		return star.getName();
 	}
 	
+	@JsonIgnore
+	public String getPersonId() {
+		return star.getId();
+	}
+	
 }

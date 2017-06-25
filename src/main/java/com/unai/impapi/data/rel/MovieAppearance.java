@@ -74,4 +74,9 @@ public class MovieAppearance extends ResourceSupport {
 		this.as = as;
 	}
 	
+	@JsonIgnore
+	public String getPersonId() {
+		return person.getId();
+	}
+	
 }

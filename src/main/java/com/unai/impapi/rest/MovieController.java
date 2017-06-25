@@ -1,5 +1,8 @@
 package com.unai.impapi.rest;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +35,20 @@ public class MovieController {
 		else movie = movieRepository.findOne(id);
 		HttpStatus status = HttpStatus.OK;
 		if (movie == null) status = HttpStatus.NOT_FOUND;
+		else {
+			movie.getCast().forEach(a -> {
+				if (!a.hasLink("self"))
+					a.add(linkTo(methodOn(PersonController.class).getPersonWithId(a.getPersonId())).withSelfRel());
+			});
+			movie.getDirectors().forEach(d -> {
+				if (!d.hasLink("self"))
+					d.add(linkTo(methodOn(PersonController.class).getPersonWithId(d.getDirectorId())).withSelfRel());
+			});
+			movie.getWriters().forEach(w -> {
+				if (!w.hasLink("self"))
+					w.add(linkTo(methodOn(PersonController.class).getPersonWithId(w.getWriterId())).withSelfRel());
+			});
+		}
 		return new ResponseEntity<>(movie, status);
 	}
 	

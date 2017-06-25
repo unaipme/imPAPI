@@ -33,6 +33,11 @@ public class CreatedBy extends ResourceSupport {
 		this.person = person;
 	}
 	
+	@JsonIgnore
+	public String getPersonId() {
+		return person.getId();
+	}
+	
 	@Override
 	public String toString() {
 		return person.getName();

@@ -2,8 +2,6 @@ package com.unai.impapi.parser;
 
 import static com.unai.impapi.parser.SeriesPageParser.isSeriesPage;
 import static org.jsoup.Jsoup.connect;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -21,8 +19,6 @@ import com.unai.impapi.data.Person;
 import com.unai.impapi.data.Series;
 import com.unai.impapi.data.Title;
 import com.unai.impapi.data.rel.PersonKnownForRole;
-import com.unai.impapi.rest.MovieController;
-import com.unai.impapi.rest.SeriesController;
 
 public class PersonPageParser implements PageParser<Person> {
 	
@@ -101,11 +97,9 @@ public class PersonPageParser implements PageParser<Person> {
 			}
 			if (isMovie) {
 				((Movie) title).setReleaseYear(getKnownForMovieReleaseYear(e));
-				role.add(linkTo(methodOn(MovieController.class).getMovieWithId(titleId, null)).withSelfRel());
 			} else {
 				((Series) title).setStartYear(getKnownForSeriesStartYear(e));
 				((Series) title).setEndYear(getKnownForSeriesEndYear(e));
-				role.add(linkTo(methodOn(SeriesController.class).getSeriesWithId(titleId)).withSelfRel());
 			}
 			title.setTitle(getKnownForMovieTitle(e));
 			role.setTitle(title);
