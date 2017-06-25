@@ -1,14 +1,10 @@
 package com.unai.impapi.data;
 
-import static com.unai.impapi.Utils.trim;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.unai.impapi.data.rel.DirectedBy;
 import com.unai.impapi.data.rel.MovieAppearance;
@@ -27,26 +23,6 @@ public class Movie extends Title {
 	
 	public String getId() {
 		return id;
-	}
-	
-	public Double getRating() {
-		return rating;
-	}
-
-	public void setRating(Double rating) {
-		this.rating = rating;
-	}
-	
-	public void setRating(String s) {
-		this.rating = Double.valueOf(trim(s).replaceAll(",", "."));
-	}
-
-	public String getTitle() {
-		return title;
-	}
-	
-	public void setTitle(String title) {
-		this.title = trim(title);
 	}
 	
 	public Integer getReleaseYear() {
@@ -93,15 +69,6 @@ public class Movie extends Title {
 	public List<Person> getCastList() {
 		return cast.stream().map(MovieAppearance::getPerson).collect(Collectors.toList());
 	}
-	
-	@JsonInclude(Include.NON_NULL)
-	public String getNumber() {
-		return number;
-	}
-
-	public void setNumber(String number) {
-		this.number = number;
-	}
 
 	public Movie withDirector(DirectedBy p) {
 		directors.add(p);
@@ -128,10 +95,6 @@ public class Movie extends Title {
 	
 	public void addAppearance(MovieAppearance a) {
 		cast.add(a);
-	}
-	
-	public boolean hasNumber() {
-		return number != null;
 	}
 	
 	@Override
@@ -174,8 +137,8 @@ public class Movie extends Title {
 	}
 
 	@Override
-	public int getType() {
-		return MOVIE_TITLE;
+	public boolean isSeries() {
+		return false;
 	}
 	
 }

@@ -3,6 +3,8 @@ package com.unai.impapi.data.rel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.hateoas.ResourceSupport;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -10,7 +12,7 @@ import com.unai.impapi.data.Movie;
 import com.unai.impapi.data.Person;
 import com.unai.impapi.data.TitleCharacter;
 
-public class MovieAppearance {
+public class MovieAppearance extends ResourceSupport {
 	
 	private Movie movie;
 	private Person person;

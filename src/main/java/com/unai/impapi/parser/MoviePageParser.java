@@ -1,7 +1,10 @@
 package com.unai.impapi.parser;
 
 import static com.unai.impapi.Utils.ifNullThen;
+import static com.unai.impapi.parser.SeriesPageParser.isSeriesPage;
 import static org.jsoup.Jsoup.connect;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.io.IOException;
 import java.util.ListIterator;
@@ -21,6 +24,8 @@ import com.unai.impapi.data.TitleCharacter;
 import com.unai.impapi.data.rel.DirectedBy;
 import com.unai.impapi.data.rel.MovieAppearance;
 import com.unai.impapi.data.rel.WrittenBy;
+import com.unai.impapi.exception.WrongIdTypeException;
+import com.unai.impapi.rest.PersonController;
 
 public class MoviePageParser implements PageParser<Movie> {
 	
@@ -39,9 +44,9 @@ public class MoviePageParser implements PageParser<Movie> {
 	}
 	
 	public MoviePageParser(String id, String language) throws IOException {
+		if (isSeriesPage(id)) throw new WrongIdTypeException("ID does not belong to a movie");
 		if (PAPI.findTitle(id) != null) {
 			Title title = PAPI.findTitle(id);
-			if (!(title instanceof Movie)) throw new RuntimeException("");
 			this.movie = (Movie) title;
 		} else {
 			this.movie = new Movie(id);
@@ -133,6 +138,7 @@ public class MoviePageParser implements PageParser<Movie> {
 			}
 			app.setCharacter(c);
 			app.setMovie(movie);
+			app.add(linkTo(methodOn(PersonController.class).getPersonWithId(pId)).withSelfRel());
 			movie.addAppearance(app);
 		};
 	}
@@ -165,6 +171,7 @@ public class MoviePageParser implements PageParser<Movie> {
 					directedBy.addDetail(match.substring(1, match.length() - 1).replaceAll("\"", "'"));
 				}
 			}
+			directedBy.add(linkTo(methodOn(PersonController.class).getPersonWithId(id)).withSelfRel());
 			movie.addDirector(directedBy);
 		}
 	}
@@ -197,6 +204,7 @@ public class MoviePageParser implements PageParser<Movie> {
 					writtenBy.addDetail(match.substring(1, match.length() - 1).replaceAll("\"", "'"));
 				}
 			}
+			writtenBy.add(linkTo(methodOn(PersonController.class).getPersonWithId(id)).withSelfRel());
 			movie.addWriter(writtenBy);
 		}
 	}

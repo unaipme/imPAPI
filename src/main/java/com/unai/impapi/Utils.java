@@ -20,7 +20,7 @@ public final class Utils {
 	
 	public static final Pattern yearPattern = Pattern.compile("[(]([0-9]){4}[)]");
 	public static final Pattern romnumPattern = Pattern.compile("[(]([IVXLCDM])+[)]");
-	public static final Pattern intervalPattern = Pattern.compile("[(]([0-9]){4}[–]([0-9]){4}[)]");
+	public static final Pattern intervalPattern = Pattern.compile("[(]([0-9]){4}([–]|[-])(([0-9]){4}|\\s)[)]");
 	public static final Pattern asPattern = Pattern.compile("[(](as )[a-zA-Z\\s\\.\\\"]+[)]");
 	public static final Pattern detailPattern = Pattern.compile("[(][a-zA-Z\\s\\.\\\"\\-\\:]+[)]");
 	

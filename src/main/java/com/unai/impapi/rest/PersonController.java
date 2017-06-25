@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.unai.impapi.data.Person;
 import com.unai.impapi.repo.PersonRepository;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 @RestController
 @RequestMapping("/people")
 public class PersonController {
@@ -31,11 +28,6 @@ public class PersonController {
 		Person person = personRepository.findOne(id);
 		HttpStatus status = HttpStatus.OK;
 		if (person == null) status = HttpStatus.NOT_FOUND;
-		else {
-			person.getKnownFor().forEach(k -> 
-				k.add(linkTo(methodOn(MovieController.class).getMovieWithId(k.getTitle().getId(), null)).withSelfRel())
-			);
-		}
 		return new ResponseEntity<>(person, status);
 	}
 	

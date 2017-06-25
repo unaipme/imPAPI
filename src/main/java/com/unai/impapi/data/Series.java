@@ -37,7 +37,8 @@ public class Series extends Title {
 	}
 	
 	public String getRunningYears() {
-		return String.format("(%d-%d)", startYear, endYear);
+		if (endYear == null) return String.format("(%d-)", startYear);
+		else return String.format("(%d-%d)", startYear, endYear);
 	}
 	
 	public List<StarringInSeries> getStarring() {
@@ -65,11 +66,6 @@ public class Series extends Title {
 	public void addCreator(CreatedBy c) {
 		creatorList.add(c);
 	}
-
-	@Override @JsonIgnore
-	public int getType() {
-		return SERIES_TITLE;
-	}
 	
 	@Override
 	public boolean equals(Object o) {
@@ -88,6 +84,11 @@ public class Series extends Title {
 		s.append("Starring:\n");
 		starList.forEach(l -> s.append(String.format("\t%s%n", l)));
 		return s.toString();
+	}
+	
+	@Override
+	public boolean isSeries() {
+		return true;
 	}
 
 }

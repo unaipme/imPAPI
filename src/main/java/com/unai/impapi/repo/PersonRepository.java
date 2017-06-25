@@ -14,10 +14,10 @@ public class PersonRepository implements PapiRepository<Person> {
 		if (!id.startsWith("nm")) {
 			return null;
 		} else try {
-				return new PersonPageParser(id).parse();
-			} catch (IOException e) {
-				return null;
-			}
+			return new PersonPageParser(id).parse();
+		} catch (IOException e) {
+			return null;
+		}
 	}
 	
 }

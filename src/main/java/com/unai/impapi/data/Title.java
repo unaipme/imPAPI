@@ -1,10 +1,13 @@
 package com.unai.impapi.data;
 
+import static com.unai.impapi.Utils.trim;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.unai.impapi.exception.WrongIdTypeException;
 
 public abstract class Title implements PageData {
-	public final static int MOVIE_TITLE = 1;
-	public final static int SERIES_TITLE = 2;
 	
 	protected String id;
 	protected String title;
@@ -18,6 +21,7 @@ public abstract class Title implements PageData {
 	
 	protected Title() {}
 	
+	@JsonInclude(Include.NON_NULL)
 	public String getTitle() {
 		return title;
 	}
@@ -33,7 +37,12 @@ public abstract class Title implements PageData {
 	public void setRating(Double rating) {
 		this.rating = rating;
 	}
-
+	
+	public void setRating(String s) {
+		this.rating = Double.valueOf(trim(s).replaceAll(",", "."));
+	}
+	
+	@JsonInclude(Include.NON_NULL)
 	public String getNumber() {
 		return number;
 	}
@@ -41,10 +50,15 @@ public abstract class Title implements PageData {
 	public void setNumber(String number) {
 		this.number = number;
 	}
+	
+	public boolean hasNumber() {
+		return number != null;
+	}
 
 	public String getId() {
 		return id;
 	}
 	
-	public abstract int getType();
+	@JsonIgnore
+	public abstract boolean isSeries();
 }

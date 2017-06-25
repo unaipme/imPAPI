@@ -60,5 +60,9 @@ public class PersonKnownForRole extends ResourceSupport {
 		result = 37 * result + getRoleName().hashCode();
 		return result;
 	}
+
+	public String getTitleId() {
+		return title.getId();
+	}
 	
 }
